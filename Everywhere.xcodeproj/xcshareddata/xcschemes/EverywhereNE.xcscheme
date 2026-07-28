@@ -17,7 +17,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "CB0BA4242FA6277800E37B2C"
-               BuildableName = "EverywhereNE.appex"
+               BuildableName = "MihomeProxyNE.appex"
                BlueprintName = "EverywhereNE"
                ReferencedContainer = "container:Everywhere.xcodeproj">
             </BuildableReference>
@@ -31,7 +31,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "CB0BA40F2FA6272C00E37B2C"
-               BuildableName = "Everywhere.app"
+               BuildableName = "MihomeProxy.app"
                BlueprintName = "Everywhere"
                ReferencedContainer = "container:Everywhere.xcodeproj">
             </BuildableReference>
@@ -60,14 +60,14 @@
       queueDebuggingEnableBacktraceRecording = "Yes">
       <RemoteRunnable
          runnableDebuggingMode = "0"
-         BundleIdentifier = "com.argsment.Everywhere"
-         RemotePath = "/var/containers/Bundle/Application/1B0A0006-14F2-4F6C-858A-845BFEC12903/Everywhere.app">
+         BundleIdentifier = "com.andre.mihomeproxy"
+         RemotePath = "/var/containers/Bundle/Application/1B0A0006-14F2-4F6C-858A-845BFEC12903/MihomeProxy.app">
       </RemoteRunnable>
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "CB0BA40F2FA6272C00E37B2C"
-            BuildableName = "Everywhere.app"
+            BuildableName = "MihomeProxy.app"
             BlueprintName = "Everywhere"
             ReferencedContainer = "container:Everywhere.xcodeproj">
          </BuildableReference>
@@ -86,7 +86,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "CB0BA40F2FA6272C00E37B2C"
-            BuildableName = "Everywhere.app"
+            BuildableName = "MihomeProxy.app"
             BlueprintName = "Everywhere"
             ReferencedContainer = "container:Everywhere.xcodeproj">
          </BuildableReference>

@@ -18,10 +18,3 @@ public final class Configuration: NSManagedObject, Identifiable {
     @NSManaged public var updatedAt: Date
     @NSManaged public var sourceURL: String?
 }
-
-extension Configuration {
-    var coreType: CoreType {
-        get { CoreType(rawValue: type) ?? .xray }
-        set { type = newValue.rawValue }
-    }
-}

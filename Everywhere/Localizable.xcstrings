@@ -2,6 +2,7 @@
   "sourceLanguage" : "en",
   "strings" : {
     "%@ configurations" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -18,6 +19,7 @@
       }
     },
     "%@ is running" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -178,6 +180,7 @@
       }
     },
     "Core Tutorial" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -484,6 +487,7 @@
       "shouldTranslate" : false
     },
     "Join Telegram Group" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -516,6 +520,12 @@
       }
     },
     "Local" : {
+
+    },
+    "mihomo" : {
+
+    },
+    "Mihomo is running" : {
 
     },
     "More" : {
@@ -583,6 +593,7 @@
       }
     },
     "New %@ configuration" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -613,6 +624,9 @@
           }
         }
       }
+    },
+    "New Mihomo configuration" : {
+
     },
     "No items" : {
       "localizations" : {
@@ -823,6 +837,7 @@
       }
     },
     "Stop the tunnel before switching cores." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -887,6 +902,7 @@
       }
     },
     "Subscribe to %@ configuration" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -901,6 +917,9 @@
           }
         }
       }
+    },
+    "Subscribe to Mihomo configuration" : {
+
     },
     "Tunnel" : {
       "localizations" : {

@@ -13,7 +13,7 @@ struct ConfigEditorScreen: View {
     @State private var draft: String = ""
 
     var body: some View {
-        ConfigEditorView(text: draftBinding, language: configuration.coreType.configLanguage)
+        ConfigEditorView(text: draftBinding)
             .id(configuration.id)
             .navigationTitle(configuration.name.isEmpty ? "Configuration" : configuration.name)
             .navigationBarTitleDisplayMode(.inline)
@@ -21,7 +21,7 @@ struct ConfigEditorScreen: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Menu {
                         Button {
-                            draft = configuration.coreType.defaultConfig
+                            draft = CoreType.defaultConfig
                             store.update(configuration, content: draft)
                         } label: {
                             Label("Reset to default", systemImage: "arrow.counterclockwise")

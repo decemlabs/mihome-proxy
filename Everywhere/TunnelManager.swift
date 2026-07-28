@@ -57,10 +57,7 @@ final class TunnelManager: ObservableObject {
         do {
             if on {
                 didConnect = false
-                let m = try await ensureManager(
-                    coreType: configuration.coreType,
-                    configID: configuration.id
-                )
+                let m = try await ensureManager(configID: configuration.id)
                 try m.connection.startVPNTunnel()
             } else {
                 pendingReconnect = false
@@ -110,13 +107,12 @@ final class TunnelManager: ObservableObject {
         lastError = nil
     }
 
-    private func ensureManager(coreType: CoreType, configID: UUID) async throws -> NETunnelProviderManager {
+    private func ensureManager(configID: UUID) async throws -> NETunnelProviderManager {
         let m = manager ?? NETunnelProviderManager()
         let proto = (m.protocolConfiguration as? NETunnelProviderProtocol) ?? NETunnelProviderProtocol()
         proto.providerBundleIdentifier = EVCore.Identifier.networkExtension
-        proto.serverAddress = "Everywhere"
+        proto.serverAddress = EVCore.Identifier.tunnelDescription
         proto.providerConfiguration = [
-            "coreType": coreType.rawValue,
             "configID": configID.uuidString,
             "dnsServers": AppState.shared.dnsServers
         ]

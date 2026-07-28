@@ -12,7 +12,6 @@ struct HomeView: View {
     @ObservedObject private var appState = AppState.shared
     @ObservedObject private var tunnel = TunnelManager.shared
     @ObservedObject private var store = ConfigurationStore.shared
-    @State private var coreSwitchBlocked = false
 
     var body: some View {
         NavigationView {
@@ -20,12 +19,12 @@ struct HomeView: View {
                 Section {
                     Toggle(isOn: tunnelToggleBinding) {
                         HStack {
-                            Image(store.selectedCore.rawValue)
+                            Image(CoreType.mihomo.rawValue)
                                 .interpolation(.high)
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 25, height: 25)
-                                .animation(.default, value: store.selectedCore)
+                                .animation(.default, value: tunnel.status)
                             Text("Tunnel")
                             Spacer()
                             Text(statusText)
@@ -36,36 +35,6 @@ struct HomeView: View {
                     .disabled(isToggleDisabled)
                 }
                 
-                Section {
-                    ForEach(CoreType.allCases) { core in
-                        HStack {
-                            Label {
-                                Text(core.displayName)
-                            } icon: {
-                                Image(core.rawValue)
-                                    .interpolation(.high)
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 25, height: 25)
-                            }
-                            if store.selectedCore == core {
-                                Image(systemName: "checkmark")
-                                    .foregroundColor(.accentColor)
-                                    .font(.caption.bold())
-                            }
-                        }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            if tunnel.status.isActive {
-                                coreSwitchBlocked = true
-                            } else {
-                                store.selectedCore = core
-                            }
-                        }
-                    }
-                }
-
                 Section {
                     NavigationLink {
                         ConfigurationsView()
@@ -89,11 +58,6 @@ struct HomeView: View {
                 }
             }
             .navigationTitle("Home")
-            .alert("Tunnel is running", isPresented: $coreSwitchBlocked) {
-                Button("OK", role: .cancel) {}
-            } message: {
-                Text("Stop the tunnel before switching cores.")
-            }
             .alert(
                 "Connection failed",
                 isPresented: errorAlertBinding,

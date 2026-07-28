@@ -15,14 +15,14 @@ final class PersistenceController {
 
     private init() {
         let model = Self.makeModel()
-        container = NSPersistentContainer(name: "Everywhere", managedObjectModel: model)
+        container = NSPersistentContainer(name: "MihomeProxy", managedObjectModel: model)
 
         // The store lives inside the App Group container so the
         // Network Extension can open the same SQLite and read the
         // active config directly. Without this the NE would need
         // the config blob shipped through providerConfiguration,
         // which iOS caps at 512 KB.
-        let storeURL = EVCore.containerURL.appendingPathComponent("Everywhere.sqlite")
+        let storeURL = EVCore.containerURL.appendingPathComponent("MihomeProxy.sqlite")
         Self.migrateLegacyStoreIfNeeded(to: storeURL, model: model)
         container.persistentStoreDescriptions = [NSPersistentStoreDescription(url: storeURL)]
 
@@ -34,18 +34,16 @@ final class PersistenceController {
         container.viewContext.automaticallyMergesChangesFromParent = true
     }
 
-    // Pre-1.1(10) builds wrote the SQLite to NSPersistentContainer's
-    // default directory inside the app sandbox. The NE can't reach
-    // that path, so 1.1(10) moved the store into the App Group
-    // container — which silently left every existing user looking
-    // at an empty database. Copy the legacy file over on first
-    // launch. If a 1.1(10) launch already created an empty store
-    // at the new path, replace it.
+    // Copy a store written by an earlier build from the old app-group layout
+    // (or, for older installations, the app sandbox) into the current shared
+    // container where the Network Extension can read it.
     private static func migrateLegacyStoreIfNeeded(to newURL: URL, model: NSManagedObjectModel) {
         let fm = FileManager.default
-        let legacyURL = NSPersistentContainer.defaultDirectoryURL()
-            .appendingPathComponent("Everywhere.sqlite")
-        guard fm.fileExists(atPath: legacyURL.path) else { return }
+        let legacyURLs = [
+            EVCore.containerURL.appendingPathComponent("Everywhere.sqlite"),
+            NSPersistentContainer.defaultDirectoryURL().appendingPathComponent("Everywhere.sqlite"),
+        ]
+        guard let legacyURL = legacyURLs.first(where: { fm.fileExists(atPath: $0.path) }) else { return }
 
         if fm.fileExists(atPath: newURL.path) {
             guard isStoreEmpty(at: newURL, model: model) else { return }
@@ -105,7 +103,7 @@ final class PersistenceController {
         entity.properties = [
             attr("id", .UUIDAttributeType),
             attr("name", .stringAttributeType, defaultValue: ""),
-            attr("type", .stringAttributeType, defaultValue: CoreType.xray.rawValue),
+            attr("type", .stringAttributeType, defaultValue: CoreType.mihomo.rawValue),
             attr("content", .stringAttributeType, defaultValue: ""),
             attr("createdAt", .dateAttributeType),
             attr("updatedAt", .dateAttributeType),

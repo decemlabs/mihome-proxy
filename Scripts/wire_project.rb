@@ -24,7 +24,7 @@ RUNESTONE_URL = 'https://github.com/simonbs/Runestone'
 RUNESTONE_REQ = { 'kind' => 'upToNextMajorVersion', 'minimumVersion' => '0.5.0' }
 TS_LANG_URL   = 'https://github.com/simonbs/TreeSitterLanguages'
 TS_LANG_REQ   = { 'kind' => 'upToNextMajorVersion', 'minimumVersion' => '0.1.10' }
-TS_LANG_PRODUCTS = %w[TreeSitterJSONRunestone TreeSitterYAMLRunestone]
+TS_LANG_PRODUCTS = %w[TreeSitterYAMLRunestone]
 
 project = Xcodeproj::Project.open(PROJECT_PATH)
 
@@ -128,6 +128,20 @@ def remove_swift_package(project, url)
   pkg.remove_from_project
 end
 
+def remove_swift_product(project, product_name)
+  project.objects.select do |o|
+    o.isa == 'XCSwiftPackageProductDependency' && o.product_name == product_name
+  end.each do |dep|
+    project.targets.each do |target|
+      target.frameworks_build_phase.files.select { |bf| bf.product_ref == dep }.each do |bf|
+        target.frameworks_build_phase.files.delete(bf)
+      end
+      target.package_product_dependencies.delete(dep)
+    end
+    dep.remove_from_project
+  end
+end
+
 # --- EverywhereCore (both targets) ---------------------------------------
 core_pkg = ensure_swift_package(project, EVERYWHERE_CORE_REPO, EVERYWHERE_CORE_REQ)
 core_app_dep = add_product_dep(app_target, project, core_pkg, EVERYWHERE_CORE_PRODUCT)
@@ -159,6 +173,7 @@ runestone_pkg = ensure_swift_package(project, RUNESTONE_URL, RUNESTONE_REQ)
 link_product(app_target, project, add_product_dep(app_target, project, runestone_pkg, 'Runestone'))
 
 ts_lang_pkg = ensure_swift_package(project, TS_LANG_URL, TS_LANG_REQ)
+remove_swift_product(project, 'TreeSitterJSONRunestone')
 TS_LANG_PRODUCTS.each do |product|
   link_product(app_target, project, add_product_dep(app_target, project, ts_lang_pkg, product))
 end

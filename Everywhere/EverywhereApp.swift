@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-struct EverywhereApp: App {
+struct MihomeProxyApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()

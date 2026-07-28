@@ -16,7 +16,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "CB0BA40F2FA6272C00E37B2C"
-               BuildableName = "Everywhere.app"
+               BuildableName = "MihomeProxy.app"
                BlueprintName = "Everywhere"
                ReferencedContainer = "container:Everywhere.xcodeproj">
             </BuildableReference>
@@ -46,7 +46,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "CB0BA40F2FA6272C00E37B2C"
-            BuildableName = "Everywhere.app"
+            BuildableName = "MihomeProxy.app"
             BlueprintName = "Everywhere"
             ReferencedContainer = "container:Everywhere.xcodeproj">
          </BuildableReference>
@@ -63,7 +63,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "CB0BA40F2FA6272C00E37B2C"
-            BuildableName = "Everywhere.app"
+            BuildableName = "MihomeProxy.app"
             BlueprintName = "Everywhere"
             ReferencedContainer = "container:Everywhere.xcodeproj">
          </BuildableReference>

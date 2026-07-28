@@ -7,23 +7,14 @@
 
 import Foundation
 
-// Rewrites the user's config so that, regardless of what they put in it,
-// the active core ends up consuming the iOS NEPacketTunnelProvider's utun
-// directly via a TUN inbound. Each core handles the FD differently (Xray
-// reads `xray.tun.fd` env, sing-box reads it via an injected
-// adapter.PlatformInterface, mihomo reads it from `tun.file-descriptor`),
-// so the normalizers only ensure the *declaration* of the inbound carries
-// the fields that have to match what the NE configured — the FD itself
-// is plumbed by EverywhereCore at start time.
+// Rewrites a Mihomo configuration so its TUN inbound consumes the iOS
+// NEPacketTunnelProvider's utun directly. EverywhereCore injects the actual
+// file descriptor when it starts Mihomo; this layer only owns the config.
 //
 // We also pin the Clash RESTful API to 127.0.0.1:9090 with no
-// auth, no dashboard, and no CORS allow-list — that's the address
-// the bundled zashboard attaches to for runtime queries, and a
-// user-supplied secret or non-loopback bind would otherwise lock us
-// out. For sing-box we overwrite `experimental.clash_api` with a
-// single `external_controller` field; for mihomo we strip the user's
-// top-level `external-controller*`, `external-ui*`,
-// `external-doh-server`, and `secret` keys and append our own.
+// auth, no dashboard, and no CORS allow-list — that's the address the
+// bundled zashboard attaches to for runtime queries. We strip the user's
+// conflicting controller/UI/secret keys and append the local controller.
 //
 // This Clash-API rewriting is the UI-facing half of normalization: it
 // only exists so zashboard can attach. When the user turns zashboard
@@ -31,12 +22,9 @@ import Foundation
 // controller/UI/secret key exactly as written — only the TUN + log
 // normalization, which the tunnel itself depends on, still runs.
 //
-// TUN strategy: patch the user's TUN inbound (if any) in place to
-// force the fields the iOS NE depends on (type, address, mtu, stack
-// for sing-box; enable/stack/mtu/inet4-address/inet6-address for
-// mihomo) and strip the ones that conflict with the NE-supplied fd
-// (`interface_name`/`platform` for sing-box; `device`/`file-descriptor`
-// for mihomo). Everything else the user wrote on the TUN inbound —
+// TUN strategy: patch the user's `tun:` block (if any) in place to force
+// the fields the iOS NE depends on and strip the fields that conflict with
+// the NE-supplied fd. Everything else the user wrote on the TUN inbound —
 // `loopback_address` / `loopback-address`, `dns_*` / `dns-hijack`,
 // `route_address` / `route-address`, `strict_route`, `udp_timeout`,
 // `exclude_mptcp`, `endpoint-independent-nat`, etc. — flows through
@@ -44,15 +32,9 @@ import Foundation
 // canonical one. For mihomo the sub-block is walked line by line;
 // no YAML parser is involved.
 //
-// The per-core rewriting lives in one `CoreNormalizer` per core
-// (`XrayNormalizer`, `SingBoxNormalizer`, `MihomoNormalizer`); this
-// type is just the entry point that dispatches to the right one.
+// `MihomoNormalizer` performs the YAML-aware line rewriting.
 enum ConfigNormalizer {
-    static func normalize(_ content: String, for core: CoreType, useZashboard: Bool) throws -> String {
-        switch core {
-        case .xray: return try XrayNormalizer.normalize(content, useZashboard: useZashboard)
-        case .singbox: return try SingBoxNormalizer.normalize(content, useZashboard: useZashboard)
-        case .mihomo: return try MihomoNormalizer.normalize(content, useZashboard: useZashboard)
-        }
+    static func normalize(_ content: String, useZashboard: Bool) throws -> String {
+        try MihomoNormalizer.normalize(content, useZashboard: useZashboard)
     }
 }

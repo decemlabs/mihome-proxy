@@ -43,32 +43,6 @@ struct SettingsView: View {
                 }
                 
                 Section("About") {
-                    Link(destination: URL(string: "https://core-tutorial.argsment.com")!) {
-                        HStack {
-                            Label("Core Tutorial", systemImage: "book")
-                            Spacer()
-                            Image(systemName: "arrow.up.right")
-                                .font(.footnote.bold())
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-                    Link(destination: URL(string: "https://t.me/everywhere_proxy")!) {
-                        HStack {
-                            Label {
-                                Text("Join Telegram Group")
-                            } icon: {
-                                Image("TelegramSymbol")
-                                    .interpolation(.high)
-                                    .renderingMode(.template)
-                                    .resizable()
-                                    .scaledToFit()
-                            }
-                            Spacer()
-                            Image(systemName: "arrow.up.right")
-                                .font(.footnote.bold())
-                                .foregroundStyle(.secondary)
-                        }
-                    }
                     NavigationLink {
                         AcknowledgementView()
                     } label: {

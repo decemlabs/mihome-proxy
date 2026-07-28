@@ -16,29 +16,26 @@ final class PacketTunnelProvider: NEPacketTunnelProvider {
     private var coreError: String?
     
     private var pathMonitor: NWPathMonitor?
-    private let pathMonitorQueue = DispatchQueue(label: "com.argsment.Everywhere.pathMonitor", qos: .utility)
+    private let pathMonitorQueue = DispatchQueue(label: "com.andre.mihomeproxy.pathMonitor", qos: .utility)
     private var pendingPathUpdate: DispatchWorkItem?
     private var latestPath: Network.NWPath?
     private static let pathDebounceInterval: DispatchTimeInterval = .milliseconds(1000)
 
     override func startTunnel(options _: [String: NSObject]?, completionHandler: @escaping (Error?) -> Void) {
         let providerConfig = (protocolConfiguration as? NETunnelProviderProtocol)?.providerConfiguration ?? [:]
-        let coreTypeRaw = (providerConfig["coreType"] as? String) ?? CoreType.xray.rawValue
-        let coreType = CoreType(rawValue: coreTypeRaw) ?? .xray
         let dnsServers = Self.cleanDNS(providerConfig["dnsServers"] as? [String])
         
         let configContent: String
         do {
             guard let idString = providerConfig["configID"] as? String,
                   let id = UUID(uuidString: idString) else {
-                throw NSError(domain: "Everywhere", code: -2, userInfo: [
+                throw NSError(domain: "MihomeProxy", code: -2, userInfo: [
                     NSLocalizedDescriptionKey: "missing configID in providerConfiguration"
                 ])
             }
             let raw = try Self.fetchConfigContent(id: id)
             configContent = try ConfigNormalizer.normalize(
                 raw,
-                for: coreType,
                 useZashboard: EVCore.getUseZashboard()
             )
         } catch {
@@ -57,21 +54,21 @@ final class PacketTunnelProvider: NEPacketTunnelProvider {
             let fd = TunnelFD.lookup(for: self.packetFlow)
             if fd < 0 {
                 completionHandler(NSError(
-                    domain: "Everywhere",
+                    domain: "MihomeProxy",
                     code: -1,
                     userInfo: [NSLocalizedDescriptionKey: "could not obtain TUN file descriptor"]
                 ))
                 return
             }
             
-            let resPath = EVCore.resourcesURL(for: coreType).path
+            let resPath = EVCore.resourcesURL().path
             var resErr: NSError?
             if !EvcoreSetResourcesPath(resPath, &resErr), let resErr {
-                NSLog("Everywhere: SetResourcesPath failed: \(resErr)")
+                NSLog("Mihome Proxy: SetResourcesPath failed: \(resErr)")
             }
 
             var coreErr: NSError?
-            guard EvcoreStartCore(coreType.rawValue, configContent, Int(fd), Self.tunnelMTU, &coreErr) else {
+            guard EvcoreStartCore(CoreType.mihomo.rawValue, configContent, Int(fd), Self.tunnelMTU, &coreErr) else {
                 self.coreError = coreErr?.localizedDescription ?? "core failed to start"
                 completionHandler(nil)
                 return
@@ -98,7 +95,7 @@ final class PacketTunnelProvider: NEPacketTunnelProvider {
         DispatchQueue.global(qos: .userInitiated).async {
             var err: NSError?
             if !EvcoreStopAll(&err), let err {
-                NSLog("Everywhere: StopAll failed: \(err)")
+                NSLog("Mihome Proxy: StopAll failed: \(err)")
             }
             complete()
         }
@@ -209,7 +206,7 @@ final class PacketTunnelProvider: NEPacketTunnelProvider {
         request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
         request.fetchLimit = 1
         guard let row = try context.fetch(request).first else {
-            throw NSError(domain: "Everywhere", code: -3, userInfo: [
+            throw NSError(domain: "MihomeProxy", code: -3, userInfo: [
                 NSLocalizedDescriptionKey: "active configuration not found in store"
             ])
         }

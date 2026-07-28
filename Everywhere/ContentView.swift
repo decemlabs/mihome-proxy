@@ -50,14 +50,13 @@ struct ContentView: View {
 }
 
 private struct RunningRootView: View {
-    @ObservedObject private var store = ConfigurationStore.shared
     @ObservedObject private var appState = AppState.shared
 
     var body: some View {
-        if appState.useZashboardEnabled && store.selectedCore != .xray {
+        if appState.useZashboardEnabled {
             DashboardView()
         } else {
-            Text("\(store.selectedCore.displayName) is running")
+            Text("Mihomo is running")
                 .font(.title2)
                 .foregroundStyle(.secondary)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)

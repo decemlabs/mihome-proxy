@@ -9,13 +9,12 @@
 /* Begin PBXBuildFile section */
 		21F6AB21D5453421EB6AED73 /* EverywhereCore in Frameworks */ = {isa = PBXBuildFile; productRef = AEC527B12E302B3F440C56C4 /* EverywhereCore */; };
 		5F5762E26C734B0D4F782C4B /* Runestone in Frameworks */ = {isa = PBXBuildFile; productRef = 4DC5B599D63656168B7AB4AD /* Runestone */; };
-		61E757C0609660122F8F2D98 /* TreeSitterJSONRunestone in Frameworks */ = {isa = PBXBuildFile; productRef = 5FC290B307CFBBDCAEB9AB4E /* TreeSitterJSONRunestone */; };
 		6489290499024A6A49A18665 /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2724A4F89A96B133F540CB /* libresolv.tbd */; };
 		7FAB6E1B99843FBC3CEF9BD3 /* TreeSitterYAMLRunestone in Frameworks */ = {isa = PBXBuildFile; productRef = 41465227A138948FE50A7E53 /* TreeSitterYAMLRunestone */; };
 		8A430E870A41435438F9F399 /* EverywhereCore in Frameworks */ = {isa = PBXBuildFile; productRef = B672C232E19E5E5F670A2F6D /* EverywhereCore */; };
 		8DA46DEAF1392B6586DBC9FC /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2724A4F89A96B133F540CB /* libresolv.tbd */; };
 		CB0BA4282FA6277800E37B2C /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB0BA4272FA6277800E37B2C /* NetworkExtension.framework */; };
-		CB0BA4302FA6277800E37B2C /* EverywhereNE.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CB0BA4252FA6277800E37B2C /* EverywhereNE.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		CB0BA4302FA6277800E37B2C /* MihomeProxyNE.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CB0BA4252FA6277800E37B2C /* MihomeProxyNE.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		E21CF12D020F260C78EF147B /* zashboard in Resources */ = {isa = PBXBuildFile; fileRef = 1197532FC5218FEC63D188EA /* zashboard */; };
 /* End PBXBuildFile section */
 
@@ -36,7 +35,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				CB0BA4302FA6277800E37B2C /* EverywhereNE.appex in Embed Foundation Extensions */,
+				CB0BA4302FA6277800E37B2C /* MihomeProxyNE.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -46,8 +45,8 @@
 /* Begin PBXFileReference section */
 		1197532FC5218FEC63D188EA /* zashboard */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder; name = zashboard; path = ThirdParty/zashboard; sourceTree = SOURCE_ROOT; };
 		AD2724A4F89A96B133F540CB /* libresolv.tbd */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = usr/lib/libresolv.tbd; sourceTree = SDKROOT; };
-		CB0BA4102FA6272C00E37B2C /* Everywhere.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Everywhere.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		CB0BA4252FA6277800E37B2C /* EverywhereNE.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = EverywhereNE.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		CB0BA4102FA6272C00E37B2C /* MihomeProxy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MihomeProxy.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CB0BA4252FA6277800E37B2C /* MihomeProxyNE.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MihomeProxyNE.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB0BA4272FA6277800E37B2C /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -99,7 +98,6 @@
 			files = (
 				5F5762E26C734B0D4F782C4B /* Runestone in Frameworks */,
 				8DA46DEAF1392B6586DBC9FC /* libresolv.tbd in Frameworks */,
-				61E757C0609660122F8F2D98 /* TreeSitterJSONRunestone in Frameworks */,
 				7FAB6E1B99843FBC3CEF9BD3 /* TreeSitterYAMLRunestone in Frameworks */,
 				8A430E870A41435438F9F399 /* EverywhereCore in Frameworks */,
 			);
@@ -133,8 +131,8 @@
 		CB0BA4112FA6272C00E37B2C /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				CB0BA4102FA6272C00E37B2C /* Everywhere.app */,
-				CB0BA4252FA6277800E37B2C /* EverywhereNE.appex */,
+				CB0BA4102FA6272C00E37B2C /* MihomeProxy.app */,
+				CB0BA4252FA6277800E37B2C /* MihomeProxyNE.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -172,12 +170,11 @@
 			name = Everywhere;
 			packageProductDependencies = (
 				4DC5B599D63656168B7AB4AD /* Runestone */,
-				5FC290B307CFBBDCAEB9AB4E /* TreeSitterJSONRunestone */,
 				41465227A138948FE50A7E53 /* TreeSitterYAMLRunestone */,
 				B672C232E19E5E5F670A2F6D /* EverywhereCore */,
 			);
 			productName = Everywhere;
-			productReference = CB0BA4102FA6272C00E37B2C /* Everywhere.app */;
+			productReference = CB0BA4102FA6272C00E37B2C /* MihomeProxy.app */;
 			productType = "com.apple.product-type.application";
 		};
 		CB0BA4242FA6277800E37B2C /* EverywhereNE */ = {
@@ -201,7 +198,7 @@
 				AEC527B12E302B3F440C56C4 /* EverywhereCore */,
 			);
 			productName = EverywhereNE;
-			productReference = CB0BA4252FA6277800E37B2C /* EverywhereNE.appex */;
+			productReference = CB0BA4252FA6277800E37B2C /* MihomeProxyNE.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
@@ -327,7 +324,6 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = C7AS5D38Q8;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -392,7 +388,6 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = C7AS5D38Q8;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -423,11 +418,11 @@
 				CODE_SIGN_ENTITLEMENTS = Everywhere/Everywhere.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 23;
-				DEVELOPMENT_TEAM = C7AS5D38Q8;
+				DEVELOPMENT_TEAM = NZFG5G7D2B;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Everywhere/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Everywhere;
+				INFOPLIST_KEY_CFBundleDisplayName = "Mihome Proxy";
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -435,14 +430,14 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.4;
-				PRODUCT_BUNDLE_IDENTIFIER = com.argsment.Everywhere;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.andre.mihomeproxy;
+				PRODUCT_NAME = MihomeProxy;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
@@ -461,11 +456,11 @@
 				CODE_SIGN_ENTITLEMENTS = Everywhere/Everywhere.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 23;
-				DEVELOPMENT_TEAM = C7AS5D38Q8;
+				DEVELOPMENT_TEAM = NZFG5G7D2B;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Everywhere/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Everywhere;
+				INFOPLIST_KEY_CFBundleDisplayName = "Mihome Proxy";
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -473,14 +468,14 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.4;
-				PRODUCT_BUNDLE_IDENTIFIER = com.argsment.Everywhere;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.andre.mihomeproxy;
+				PRODUCT_NAME = MihomeProxy;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
@@ -497,10 +492,9 @@
 				CODE_SIGN_ENTITLEMENTS = EverywhereNE/EverywhereNE.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 23;
-				DEVELOPMENT_TEAM = C7AS5D38Q8;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = EverywhereNE/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = EverywhereNE;
+				INFOPLIST_KEY_CFBundleDisplayName = NetworkExtension;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -509,8 +503,8 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.4;
-				PRODUCT_BUNDLE_IDENTIFIER = com.argsment.Everywhere.EverywhereNE;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.andre.mihomeproxy.NetworkExtension;
+				PRODUCT_NAME = MihomeProxyNE;
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -527,10 +521,9 @@
 				CODE_SIGN_ENTITLEMENTS = EverywhereNE/EverywhereNE.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 23;
-				DEVELOPMENT_TEAM = C7AS5D38Q8;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = EverywhereNE/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = EverywhereNE;
+				INFOPLIST_KEY_CFBundleDisplayName = NetworkExtension;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -539,8 +532,8 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.4;
-				PRODUCT_BUNDLE_IDENTIFIER = com.argsment.Everywhere.EverywhereNE;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.andre.mihomeproxy.NetworkExtension;
+				PRODUCT_NAME = MihomeProxyNE;
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -620,11 +613,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 803E3EBB055B6F1C161E71E9 /* XCRemoteSwiftPackageReference "Runestone" */;
 			productName = Runestone;
-		};
-		5FC290B307CFBBDCAEB9AB4E /* TreeSitterJSONRunestone */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 21BE8ADEADB6191676A9B4DB /* XCRemoteSwiftPackageReference "TreeSitterLanguages" */;
-			productName = TreeSitterJSONRunestone;
 		};
 		AEC527B12E302B3F440C56C4 /* EverywhereCore */ = {
 			isa = XCSwiftPackageProductDependency;

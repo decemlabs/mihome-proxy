@@ -7,13 +7,11 @@
 
 import Runestone
 import SwiftUI
-import TreeSitterJSONRunestone
 import TreeSitterYAMLRunestone
 
 struct ConfigEditorView: UIViewRepresentable {
     @Environment(\.colorScheme) private var colorScheme
     @Binding var text: String
-    let language: String
 
     func makeUIView(context: Context) -> TextView {
         let textView = TextView()
@@ -33,7 +31,7 @@ struct ConfigEditorView: UIViewRepresentable {
         textView.kern = 0.3
         textView.pageGuideColumn = 80
         
-        textView.setLanguageMode(Self.languageMode(for: language))
+        textView.setLanguageMode(TreeSitterLanguageMode(language: .yaml))
         
         return textView
     }
@@ -60,11 +58,4 @@ struct ConfigEditorView: UIViewRepresentable {
         }
     }
 
-    private static func languageMode(for language: String) -> any LanguageMode {
-        switch language {
-        case "json": return TreeSitterLanguageMode(language: .json)
-        case "yaml": return TreeSitterLanguageMode(language: .yaml)
-        default:     return PlainTextLanguageMode()
-        }
-    }
 }

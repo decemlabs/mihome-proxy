@@ -17,11 +17,11 @@ struct ConfigurationsView: View {
     @State private var isDownloading = false
     @State private var importErrorMessage: String?
 
-    private var activeID: UUID? { store.activeIDByCoreType[store.selectedCore] }
+    private var activeID: UUID? { store.activeID }
 
     var body: some View {
         List {
-            ForEach(store.configurationsForSelectedCore) { config in
+            ForEach(store.configurations) { config in
                 NavigationLink {
                     ConfigEditorScreen(configuration: config)
                 } label: {
@@ -50,7 +50,7 @@ struct ConfigurationsView: View {
                 }
             }
         }
-        .navigationTitle("\(store.selectedCore.displayName) configurations")
+        .navigationTitle("Configurations")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
@@ -81,7 +81,7 @@ struct ConfigurationsView: View {
         }
         .fileImporter(
             isPresented: $fileImporting,
-            allowedContentTypes: [.json, .yaml, .text, .data, .item],
+            allowedContentTypes: [.yaml, .text, .data, .item],
             allowsMultipleSelection: false
         ) { result in
             handleFileImport(result)
@@ -162,13 +162,12 @@ struct ConfigurationsView: View {
     }
 
     private func promptCreate() {
-        let core = store.selectedCore
         NameInputAlert.present(
-            title: String(localized: "New \(core.displayName) configuration"),
+            title: String(localized: "New Mihomo configuration"),
             message: String(localized: "Enter a name for the new configuration."),
             placeholder: String(localized: "Name")
         ) { name in
-            store.create(name: name, type: core, content: core.defaultConfig)
+            store.create(name: name, content: CoreType.defaultConfig)
         }
     }
 
@@ -182,39 +181,28 @@ struct ConfigurationsView: View {
     }
 
     private func promptSubscribe() {
-        let core = store.selectedCore
         URLInputAlert.present(
-            title: String(localized: "Subscribe to \(core.displayName) configuration"),
+            title: String(localized: "Subscribe to Mihomo configuration"),
             message: String(localized: "Enter a subscription URL.")
         ) { url in
-            download(from: url, for: core)
+            download(from: url)
         }
     }
 
     private func extractRemarks(from content: String, fallbackUrl: URL) -> String {
-        // JSON
-        if let data = content.data(using: .utf8),
-            let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-            let remarks = json["remarks"] as? String,
-            !remarks.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                return remarks.trimmingCharacters(in: .whitespacesAndNewlines)
-        }
-
-        // YAML
-        /* for line in content.components(separatedBy: .newlines) {
+        for line in content.components(separatedBy: .newlines) {
             let trimmed = line.trimmingCharacters(in: .whitespaces)
             guard trimmed.hasPrefix("remarks:") else { continue }
             let value = String(trimmed.dropFirst(8))
                 .trimmingCharacters(in: .whitespaces)
                 .trimmingCharacters(in: CharacterSet(charactersIn: "\"'"))
             if !value.isEmpty { return value }
-        } */
+        }
 
         return derivedName(from: fallbackUrl)
     }
 
     private func handleFileImport(_ result: Result<[URL], Error>) {
-        let core = store.selectedCore
         switch result {
         case .success(let urls):
             guard let url = urls.first else { return }
@@ -222,7 +210,7 @@ struct ConfigurationsView: View {
             defer { if scoped { url.stopAccessingSecurityScopedResource() } }
             do {
                 let content = try String(contentsOf: url, encoding: .utf8)
-                store.create(name: extractRemarks(from: content, fallbackUrl: url), type: core, content: content)
+                store.create(name: extractRemarks(from: content, fallbackUrl: url), content: content)
             } catch {
                 importErrorMessage = "Could not read \(url.lastPathComponent): \(error.localizedDescription)"
             }
@@ -231,14 +219,14 @@ struct ConfigurationsView: View {
         }
     }
 
-    private func download(from url: URL, for core: CoreType) {
+    private func download(from url: URL) {
         isDownloading = true
         Task {
             defer { Task { @MainActor in isDownloading = false } }
             do {
                 let content = try await fetchConfig(from: url)
                 let name = extractRemarks(from: content, fallbackUrl: url)
-                store.create(name: name, type: core, content: content, sourceURL: url.absoluteString)
+                store.create(name: name, content: content, sourceURL: url.absoluteString)
             } catch {
                 importErrorMessage = error.localizedDescription
             }
@@ -261,18 +249,18 @@ struct ConfigurationsView: View {
 
     private func fetchConfig(from url: URL) async throws -> String {
         var request = URLRequest(url: url)
-        request.setValue("Everywhere/1.0 Clash/1.11.0", forHTTPHeaderField: "User-Agent")
+        request.setValue("MihomeProxy/1.0 Clash/1.11.0", forHTTPHeaderField: "User-Agent")
         let (data, response) = try await URLSession.shared.data(for: request)
         if let http = response as? HTTPURLResponse, !(200...299).contains(http.statusCode) {
             throw NSError(
-                domain: "EverywhereDownload",
+                domain: "MihomeProxyDownload",
                 code: http.statusCode,
                 userInfo: [NSLocalizedDescriptionKey: "Server returned HTTP \(http.statusCode)."]
             )
         }
         guard let content = String(data: data, encoding: .utf8) else {
             throw NSError(
-                domain: "EverywhereDownload",
+                domain: "MihomeProxyDownload",
                 code: -1,
                 userInfo: [NSLocalizedDescriptionKey: "Response is not valid UTF-8 text."]
             )

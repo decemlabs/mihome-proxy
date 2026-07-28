@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Top-level: wire the Xcode project. The zashboard dashboard is checked
 # into ThirdParty/zashboard/ as a prebuilt static bundle, and the Go
-# cores ship as a prebuilt xcframework via the EverywhereCore SwiftPM
+# core ships as a prebuilt xcframework via the EverywhereCore SwiftPM
 # package — so there is no local source build step.
 #
 # Pass `--build-app` as a final step to also run `xcodebuild` for the

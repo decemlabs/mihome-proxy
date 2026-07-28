@@ -26,9 +26,14 @@ import Foundation
 //    appended at the end. Both steps run only when zashboard is on;
 //    with it off these keys pass through untouched.
 //  - At `log-level`, cap verbosity down to `logFloor`.
-enum MihomoNormalizer: CoreNormalizer {
+enum MihomoNormalizer {
     private static let logFloor = "warning"
     private static let logOrder = ["debug", "info", "warning", "error", "silent"]
+    private static let tunnelPrefix = "198.18.0.1/16"
+    private static let tunnelPrefix6 = "fd00::1/126"
+    private static let tunnelMTU = 1500
+    private static let tunStack = "gvisor"
+    private static let clashAPIAddress = "127.0.0.1:9090"
 
     // Force-set sub-keys inside `tun:`. We drop the user's version and
     // emit ours at the end of the block.
@@ -41,7 +46,7 @@ enum MihomoNormalizer: CoreNormalizer {
     ]
 
     // Stripped sub-keys inside `tun:`. We drop the user's version and
-    // don't emit a replacement — EverywhereCore plumbs the fd through
+    // don't emit a replacement — the Go bridge plumbs the fd through
     // the Go bridge, and a user-supplied `device` or `file-descriptor`
     // would compete with that.
     private static let tunStrippedKeys: Set<String> = [
@@ -65,8 +70,8 @@ enum MihomoNormalizer: CoreNormalizer {
         "secret",
     ]
 
-    // mihomo's normalize never actually throws — it walks lines and can't
-    // fail — but conforms to the throwing `CoreNormalizer` requirement.
+    // Mihomo's normalizer walks YAML line-by-line and does not parse or
+    // re-serialize the user's configuration.
     static func normalize(_ content: String, useZashboard: Bool) throws -> String {
         let normalized = content
             .replacingOccurrences(of: "\r\n", with: "\n")
@@ -235,5 +240,12 @@ enum MihomoNormalizer: CoreNormalizer {
         var rest = line.dropFirst(key.count + 1)
         if let hash = rest.firstIndex(of: "#") { rest = rest[..<hash] }
         return rest.trimmingCharacters(in: .whitespaces)
+    }
+
+    private static func cappedLevel(_ level: String?, order: [String], floor: String) -> String {
+        guard let level = level?.trimmingCharacters(in: .whitespaces), !level.isEmpty else { return floor }
+        guard let index = order.firstIndex(of: level.lowercased()),
+              let floorIndex = order.firstIndex(of: floor) else { return level }
+        return index < floorIndex ? floor : level
     }
 }

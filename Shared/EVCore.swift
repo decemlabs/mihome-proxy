@@ -11,14 +11,14 @@ final class EVCore {
     // MARK: - Identifiers
 
     enum Identifier {
-        /// Bundle identifier prefix for the Everywhere app family.
-        static let bundle = "com.argsment.Everywhere"
+        /// Bundle identifier prefix for the Mihome Proxy app family.
+        static let bundle = "com.andre.mihomeproxy"
         /// App Group suite shared between the app and Network Extension.
         static let appGroupSuite = "group.\(bundle)"
         /// Bundle identifier of the packet tunnel Network Extension.
-        static let networkExtension = "\(bundle).EverywhereNE"
+        static let networkExtension = "\(bundle).NetworkExtension"
         /// Description shown for the VPN profile in iOS Settings.
-        static let tunnelDescription = "Everywhere"
+        static let tunnelDescription = "Mihome Proxy"
     }
 
     /// Fallback DNS servers used when the user hasn't customized them.
@@ -44,7 +44,6 @@ final class EVCore {
     /// already returns `false` for unset keys.
     private static let registeredDefaults: [String: Any] = [
         UserDefaultsKey.dnsServers: defaultDNSServers,
-        UserDefaultsKey.selectedCore: CoreType.xray.rawValue,
         UserDefaultsKey.useZashboard: true,
     ]
 
@@ -52,9 +51,9 @@ final class EVCore {
 
     private enum UserDefaultsKey {
         static let activeByCoreType = "activeByCoreType"
+        static let activeConfigurationID = "activeConfigurationID"
         static let alwaysOnEnabled = "alwaysOnEnabled"
         static let dnsServers = "dnsServers"
-        static let selectedCore = "selectedCore"
         static let tunnelIncludeAPNs = "tunnelIncludeAPNs"
         static let tunnelIncludeAllNetworks = "tunnelIncludeAllNetworks"
         static let tunnelIncludeCellularServices = "tunnelIncludeCellularServices"
@@ -74,28 +73,47 @@ final class EVCore {
         return url
     }
 
-    /// Per-core directory for user-injected assets (geoip/geosite,
-    /// mmdb, certs, sing-box rule_set files, mihomo cache.db, …).
-    /// Each core gets its own subfolder so colliding filenames like
-    /// `cache.db` don't clobber each other. The Network Extension
-    /// reads from the matching subfolder and points the active core
-    /// at it via EvcoreSetResourcesPath.
-    static func resourcesURL(for core: CoreType) -> URL {
+    /// Root directory for user-injected Mihomo assets such as MMDB files,
+    /// certificates, rule providers, and cache.db.
+    static func resourcesURL() -> URL {
         let url = containerURL
             .appendingPathComponent("Resources", isDirectory: true)
-            .appendingPathComponent(core.rawValue, isDirectory: true)
         try? FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
+        migrateLegacyMihomoResources(into: url)
         return url
+    }
+
+    private static func migrateLegacyMihomoResources(into resourcesURL: URL) {
+        let fm = FileManager.default
+        let legacyURL = resourcesURL.appendingPathComponent(CoreType.mihomo.rawValue, isDirectory: true)
+        guard fm.fileExists(atPath: legacyURL.path),
+              let entries = try? fm.contentsOfDirectory(at: legacyURL, includingPropertiesForKeys: nil) else { return }
+        for entry in entries {
+            let destination = resourcesURL.appendingPathComponent(entry.lastPathComponent)
+            guard !fm.fileExists(atPath: destination.path) else { continue }
+            try? fm.moveItem(at: entry, to: destination)
+        }
+        try? fm.removeItem(at: legacyURL)
     }
 
     // MARK: - Typed UserDefaults Accessors
     
-    static func getActiveByCoreType() -> [String: String] {
-        userDefaults.dictionary(forKey: UserDefaultsKey.activeByCoreType) as? [String: String] ?? [:]
+    static func getActiveConfigurationID() -> UUID? {
+        guard let raw = userDefaults.string(forKey: UserDefaultsKey.activeConfigurationID) else { return nil }
+        return UUID(uuidString: raw)
     }
 
-    static func setActiveByCoreType(_ map: [String: String]) {
-        userDefaults.set(map, forKey: UserDefaultsKey.activeByCoreType)
+    static func setActiveConfigurationID(_ id: UUID?) {
+        userDefaults.set(id?.uuidString, forKey: UserDefaultsKey.activeConfigurationID)
+    }
+
+    /// Reads the old multi-core selection once so an in-place upgrade keeps
+    /// the user's active Mihomo configuration when the same App Group is used.
+    static func migrateLegacyMihomoActiveConfigurationID() -> UUID? {
+        defer { userDefaults.removeObject(forKey: UserDefaultsKey.activeByCoreType) }
+        guard let raw = userDefaults.dictionary(forKey: UserDefaultsKey.activeByCoreType) as? [String: String],
+              let id = raw[CoreType.mihomo.rawValue] else { return nil }
+        return UUID(uuidString: id)
     }
     
     static func getAlwaysOnEnabled() -> Bool {
@@ -112,14 +130,6 @@ final class EVCore {
 
     static func setDNSServers(_ servers: [String]) {
         userDefaults.set(servers, forKey: UserDefaultsKey.dnsServers)
-    }
-    
-    static func getSelectedCore() -> CoreType {
-        CoreType(rawValue: userDefaults.string(forKey: UserDefaultsKey.selectedCore)!) ?? .xray
-    }
-
-    static func setSelectedCore(_ core: CoreType) {
-        userDefaults.set(core.rawValue, forKey: UserDefaultsKey.selectedCore)
     }
     
     static func getTunnelIncludeAllNetworks() -> Bool {

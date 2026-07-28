@@ -69,22 +69,6 @@ struct Acknowledgement: Identifiable {
 
     static let all: [Acknowledgement] = [
         Acknowledgement(
-            name: "Xray-core",
-            url: URL(string: "https://github.com/XTLS/Xray-core")!,
-            license: "MPL 2.0",
-            licenseText: Licenses.mpl2
-        ),
-        Acknowledgement(
-            name: "sing-box",
-            url: URL(string: "https://github.com/SagerNet/sing-box")!,
-            license: "GPL-3.0",
-            licenseText: """
-            Copyright (C) 2022 by nekohasekai <contact-sagernet@sekai.icu>
-
-            \(Licenses.gpl3)
-            """
-        ),
-        Acknowledgement(
             name: "mihomo",
             url: URL(string: "https://github.com/MetaCubeX/mihomo")!,
             license: "GPL-3.0",

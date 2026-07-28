@@ -14,29 +14,12 @@ final class ConfigurationStore: ObservableObject {
 
     @Published private(set) var configurations: [Configuration] = []
 
-    /// The core the user is currently working with — drives what
-    /// HomeView's picker reads/writes and what `ConfigurationsView`
-    /// filters its list by.
-    @Published var selectedCore: CoreType {
-        didSet { EVCore.setSelectedCore(selectedCore) }
-    }
+    /// The configuration the tunnel will run with.
+    @Published private(set) var activeID: UUID?
 
-    /// Each core type has its own "active" configuration so switching
-    /// the core picker doesn't lose the user's pick for the other
-    /// cores.
-    @Published private(set) var activeIDByCoreType: [CoreType: UUID] = [:]
-
-    /// The configuration that the tunnel will run with right now —
-    /// always the active one for the selected core.
     var active: Configuration? {
-        guard let id = activeIDByCoreType[selectedCore] else { return nil }
+        guard let id = activeID else { return nil }
         return configurations.first { $0.id == id }
-    }
-
-    /// Configurations filtered to the selected core. ConfigurationsView
-    /// renders this.
-    var configurationsForSelectedCore: [Configuration] {
-        configurations.filter { $0.coreType == selectedCore }
     }
 
     private let context: NSManagedObjectContext
@@ -44,9 +27,9 @@ final class ConfigurationStore: ObservableObject {
     private init() {
         self.context = PersistenceController.shared.container.viewContext
 
-        self.selectedCore = EVCore.getSelectedCore()
-
-        loadActiveMap()
+        self.activeID = EVCore.getActiveConfigurationID()
+        reload()
+        migrateToMihomoOnly()
         reload()
         seedIfEmpty()
     }
@@ -57,52 +40,33 @@ final class ConfigurationStore: ObservableObject {
             NSSortDescriptor(keyPath: \Configuration.createdAt, ascending: true)
         ]
         configurations = (try? context.fetch(request)) ?? []
-        // Drop dangling active pointers (e.g. row deleted out of band).
-        var changed = false
-        for (core, id) in activeIDByCoreType {
-            if !configurations.contains(where: { $0.id == id }) {
-                activeIDByCoreType[core] = nil
-                changed = true
-            }
+        if let activeID, !configurations.contains(where: { $0.id == activeID }) {
+            self.activeID = nil
+            persistActiveID()
         }
-        if changed { persistActiveMap() }
     }
 
     @discardableResult
-    func create(name: String, type: CoreType, content: String, sourceURL: String? = nil) -> Configuration {
+    func create(name: String, content: String, sourceURL: String? = nil) -> Configuration {
         let cfg = Configuration(context: context)
         cfg.id = UUID()
         cfg.name = name
-        cfg.type = type.rawValue
+        cfg.type = CoreType.mihomo.rawValue
         cfg.content = content
         cfg.sourceURL = sourceURL
         cfg.createdAt = Date()
         cfg.updatedAt = Date()
         save()
         reload()
-        if activeIDByCoreType[type] == nil {
-            activeIDByCoreType[type] = cfg.id
-            persistActiveMap()
+        if activeID == nil {
+            activeID = cfg.id
+            persistActiveID()
         }
         return cfg
     }
 
-    func update(_ cfg: Configuration, name: String? = nil, type: CoreType? = nil, content: String? = nil) {
-        let oldType = cfg.coreType
+    func update(_ cfg: Configuration, name: String? = nil, content: String? = nil) {
         if let name { cfg.name = name }
-        if let newType = type, newType != oldType {
-            cfg.coreType = newType
-            // Re-balance the per-core active map across the move.
-            if activeIDByCoreType[oldType] == cfg.id {
-                activeIDByCoreType[oldType] = configurations.first {
-                    $0.coreType == oldType && $0.id != cfg.id
-                }?.id
-            }
-            if activeIDByCoreType[newType] == nil {
-                activeIDByCoreType[newType] = cfg.id
-            }
-            persistActiveMap()
-        }
         if let content { cfg.content = content }
         cfg.updatedAt = Date()
         save()
@@ -110,21 +74,20 @@ final class ConfigurationStore: ObservableObject {
     }
 
     func delete(_ cfg: Configuration) {
-        let type = cfg.coreType
         let id = cfg.id
-        let wasActive = (activeIDByCoreType[type] == id)
+        let wasActive = activeID == id
         context.delete(cfg)
         save()
         reload()
         if wasActive {
-            activeIDByCoreType[type] = configurations.first { $0.coreType == type }?.id
-            persistActiveMap()
+            activeID = configurations.first?.id
+            persistActiveID()
         }
     }
 
     func setActive(_ cfg: Configuration) {
-        activeIDByCoreType[cfg.coreType] = cfg.id
-        persistActiveMap()
+        activeID = cfg.id
+        persistActiveID()
     }
 
     // MARK: - Persistence helpers
@@ -138,19 +101,18 @@ final class ConfigurationStore: ObservableObject {
         }
     }
 
-    private func persistActiveMap() {
-        let dict = activeIDByCoreType.reduce(into: [String: String]()) { acc, kv in
-            acc[kv.key.rawValue] = kv.value.uuidString
-        }
-        EVCore.setActiveByCoreType(dict)
+    private func persistActiveID() {
+        EVCore.setActiveConfigurationID(activeID)
     }
 
-    private func loadActiveMap() {
-        let raw = EVCore.getActiveByCoreType()
-        activeIDByCoreType = raw.reduce(into: [CoreType: UUID]()) { acc, kv in
-            if let core = CoreType(rawValue: kv.key), let id = UUID(uuidString: kv.value) {
-                acc[core] = id
-            }
+    private func migrateToMihomoOnly() {
+        let unsupported = configurations.filter { $0.type != CoreType.mihomo.rawValue }
+        unsupported.forEach { context.delete($0) }
+        if !unsupported.isEmpty { save() }
+
+        if activeID == nil {
+            activeID = EVCore.migrateLegacyMihomoActiveConfigurationID()
+            if activeID != nil { persistActiveID() }
         }
     }
 
@@ -158,9 +120,6 @@ final class ConfigurationStore: ObservableObject {
 
     private func seedIfEmpty() {
         guard configurations.isEmpty else { return }
-        create(name: "Xray", type: .xray, content: ExampleConfigs.xray)
-        create(name: "sing-box", type: .singbox, content: ExampleConfigs.singbox)
-        create(name: "mihomo", type: .mihomo, content: ExampleConfigs.mihomo)
-        // create() already populated activeIDByCoreType for each type.
+        create(name: "mihomo", content: CoreType.defaultConfig)
     }
 }
