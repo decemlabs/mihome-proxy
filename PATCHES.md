@@ -1,16 +1,16 @@
 # Mihome Proxy build notes
 
 Mihome Proxy keeps its Mihomo-only Go bridge in
-`Packages/EverywhereCore/`. The Swift package downloads a prebuilt XCFramework
+`Packages/MihomeCore/`. The Swift package downloads a prebuilt XCFramework
 from this repository's `core-*` releases, while `MIHOME_LOCAL_CORE=1` selects
 the locally generated framework.
 
 `Scripts/wire_project.rb` wires these dependencies into
-`Everywhere.xcodeproj`:
+`MihomeProxy.xcodeproj`:
 
 | Dependency | Targets | Purpose |
 | --- | --- | --- |
-| Local `EverywhereCore` package | app + Network Extension | Mihomo Go bridge and runtime |
+| Local `MihomeCore` package | app + Network Extension | Mihomo Go bridge and runtime |
 | `Runestone` | app | Configuration editor |
 | `TreeSitterYAMLRunestone` | app | YAML highlighting |
 | `zashboard` | app resources | Mihomo runtime dashboard |
@@ -27,7 +27,7 @@ modules, runs Go tests, and builds the device/simulator XCFramework.
 publishes a `ditto` archive, and writes its SwiftPM checksum into the local
 package manifest.
 
-The bridge API stays compatible with the original EverywhereCore so the
+The bridge API stays compatible with the original upstream EverywhereCore so the
 Network Extension can keep calling `EvcoreStartCore` and related lifecycle
 functions. Internally, `StartCore` rejects every value except `mihomo`.
 

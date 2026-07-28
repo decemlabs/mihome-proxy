@@ -31,13 +31,13 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v7
         with:
-          go-version-file: Packages/EverywhereCore/go/go.mod
+          go-version-file: Packages/MihomeCore/go/go.mod
           cache: true
-          cache-dependency-path: Packages/EverywhereCore/go/go.sum
+          cache-dependency-path: Packages/MihomeCore/go/go.sum
 
       - name: Detect Mihomo version
         id: versions
-        working-directory: Packages/EverywhereCore/go
+        working-directory: Packages/MihomeCore/go
         run: |
           set -euo pipefail
           current=$(go list -m -f '{{.Version}}' github.com/metacubex/mihomo)
@@ -65,7 +65,7 @@ jobs:
 
       - name: Update Mihomo
         if: steps.proceed.outputs.release == 'true'
-        working-directory: Packages/EverywhereCore/go
+        working-directory: Packages/MihomeCore/go
         run: |
           set -euo pipefail
           go get \
@@ -81,7 +81,7 @@ jobs:
 
       - name: Build XCFramework
         if: steps.proceed.outputs.release == 'true'
-        run: Packages/EverywhereCore/Scripts/build.sh
+        run: Packages/MihomeCore/Scripts/build.sh
 
       - name: Select release tag
         if: steps.proceed.outputs.release == 'true'
@@ -103,13 +103,13 @@ jobs:
         run: |
           set -euo pipefail
           tag="${{ steps.tag.outputs.tag }}"
-          core=Packages/EverywhereCore
-          zip="$core/EverywhereCore-$tag.xcframework.zip"
+          core=Packages/MihomeCore
+          zip="$core/MihomeCore-$tag.xcframework.zip"
           ditto -c -k --sequesterRsrc --keepParent \
-            "$core/EverywhereCore.xcframework" "$zip"
+            "$core/MihomeCore.xcframework" "$zip"
           checksum=$(swift package compute-checksum "$zip")
           zip_bytes=$(stat -f%z "$zip")
-          device_binary="$core/EverywhereCore.xcframework/ios-arm64/EverywhereCore.framework/EverywhereCore"
+          device_binary="$core/MihomeCore.xcframework/ios-arm64/MihomeCore.framework/MihomeCore"
           device_bytes=$(stat -f%z "$device_binary")
           "$core/Scripts/render-package.sh" "$tag" "$checksum"
           echo "zip=$zip" >> "$GITHUB_OUTPUT"
@@ -126,9 +126,9 @@ jobs:
           git config user.email \
             "41898282+github-actions[bot]@users.noreply.github.com"
           git add \
-            Packages/EverywhereCore/Package.swift \
-            Packages/EverywhereCore/go/go.mod \
-            Packages/EverywhereCore/go/go.sum
+            Packages/MihomeCore/Package.swift \
+            Packages/MihomeCore/go/go.mod \
+            Packages/MihomeCore/go/go.sum
           git commit -m "Release $tag"
           git tag -a "$tag" -m "$tag"
           git push origin \
@@ -143,7 +143,7 @@ jobs:
           tag="${{ steps.tag.outputs.tag }}"
           notes_file="$RUNNER_TEMP/core-release-notes.md"
           {
-            echo "Mihomo-only EverywhereCore"
+            echo "Mihomo-only MihomeCore"
             echo
             echo "Mihomo: ${{ steps.versions.outputs.current }} → ${{ steps.versions.outputs.latest }}"
             echo "SwiftPM checksum: ${{ steps.artifact.outputs.checksum }}"

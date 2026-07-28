@@ -1,6 +1,6 @@
 //
 //  ConfigNormalizer.swift
-//  Everywhere
+//  Mihome Proxy
 //
 //  Created by NodePassProject on 5/24/26.
 //
@@ -8,7 +8,7 @@
 import Foundation
 
 // Rewrites a Mihomo configuration so its TUN inbound consumes the iOS
-// NEPacketTunnelProvider's utun directly. EverywhereCore injects the actual
+// NEPacketTunnelProvider's utun directly. MihomeCore injects the actual
 // file descriptor when it starts Mihomo; this layer only owns the config.
 //
 // We also pin the Clash RESTful API to 127.0.0.1:9090 with no

@@ -1,6 +1,6 @@
 //
 //  EVCore.swift
-//  Everywhere
+//  Mihome Proxy
 //
 //  Created by NodePassProject on 5/17/26.
 //

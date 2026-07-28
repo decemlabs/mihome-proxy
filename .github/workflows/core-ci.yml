@@ -3,13 +3,13 @@ name: Mihomo core CI
 on:
   pull_request:
     paths:
-      - "Packages/EverywhereCore/**"
+      - "Packages/MihomeCore/**"
       - ".github/workflows/core-*.yml"
   push:
     branches:
       - main
     paths:
-      - "Packages/EverywhereCore/**"
+      - "Packages/MihomeCore/**"
       - ".github/workflows/core-*.yml"
 
 permissions:
@@ -27,12 +27,12 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v7
         with:
-          go-version-file: Packages/EverywhereCore/go/go.mod
+          go-version-file: Packages/MihomeCore/go/go.mod
           cache: true
-          cache-dependency-path: Packages/EverywhereCore/go/go.sum
+          cache-dependency-path: Packages/MihomeCore/go/go.sum
 
       - name: Verify Go module
-        working-directory: Packages/EverywhereCore/go
+        working-directory: Packages/MihomeCore/go
         run: |
           set -euo pipefail
           go mod tidy
@@ -46,21 +46,21 @@ jobs:
           fi
 
       - name: Build XCFramework
-        run: Packages/EverywhereCore/Scripts/build.sh
+        run: Packages/MihomeCore/Scripts/build.sh
 
       - name: Validate slices and package
         run: |
           set -euo pipefail
-          plist=Packages/EverywhereCore/EverywhereCore.xcframework/Info.plist
+          plist=Packages/MihomeCore/MihomeCore.xcframework/Info.plist
           plutil -p "$plist" | grep -q '"LibraryIdentifier" => "ios-arm64"'
           plutil -p "$plist" | grep -q \
             '"LibraryIdentifier" => "ios-arm64_x86_64-simulator"'
           test "$(MIHOME_LOCAL_CORE=1 swift package \
-            --package-path Packages/EverywhereCore dump-package \
-            | jq -r '.name')" = "EverywhereCore"
+            --package-path Packages/MihomeCore dump-package \
+            | jq -r '.name')" = "MihomeCore"
 
       - name: Report sizes
         run: |
-          du -sh Packages/EverywhereCore/EverywhereCore.xcframework
-          find Packages/EverywhereCore/EverywhereCore.xcframework \
-            -type f -name EverywhereCore -exec ls -lh {} \;
+          du -sh Packages/MihomeCore/MihomeCore.xcframework
+          find Packages/MihomeCore/MihomeCore.xcframework \
+            -type f -name MihomeCore -exec ls -lh {} \;

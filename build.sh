@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Top-level build helper. The zashboard dashboard is checked into
-# ThirdParty/zashboard/ and Packages/EverywhereCore wraps the released
+# ThirdParty/zashboard/ and Packages/MihomeCore wraps the released
 # Mihomo-only XCFramework.
 #
 # --build-core builds a local XCFramework.
@@ -33,7 +33,7 @@ if [[ -z "${DEVELOPER_DIR:-}" && -d /Applications/Xcode.app/Contents/Developer ]
 fi
 
 if [[ "$build_core" == true ]]; then
-  Packages/EverywhereCore/Scripts/build.sh
+  Packages/MihomeCore/Scripts/build.sh
   export MIHOME_LOCAL_CORE=1
 fi
 
@@ -44,14 +44,14 @@ ruby Scripts/wire_project.rb
 
 if [[ "$build_app" == true ]]; then
   if [[ "${MIHOME_LOCAL_CORE:-0}" == "1" && \
-    ! -d Packages/EverywhereCore/EverywhereCore.xcframework ]]; then
+    ! -d Packages/MihomeCore/MihomeCore.xcframework ]]; then
     echo "error: local core is missing; run with --build-core" >&2
     exit 1
   fi
   echo "→ xcodebuild simulator smoke test"
   xcodebuild \
-    -project Everywhere.xcodeproj \
-    -scheme Everywhere \
+    -project MihomeProxy.xcodeproj \
+    -scheme MihomeProxy \
     -sdk iphonesimulator \
     -destination 'generic/platform=iOS Simulator' \
     -configuration Debug \

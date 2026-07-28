@@ -1,23 +1,24 @@
 #!/usr/bin/env ruby
-# Wires the local EverywhereCore SwiftPM package, the Runestone editor
+# Wires the local MihomeCore SwiftPM package, the Runestone editor
 # packages, and the zashboard dashboard resource bundle into
-# Everywhere.xcodeproj (iOS). Idempotent — running it twice is safe.
+# MihomeProxy.xcodeproj (iOS). Idempotent — running it twice is safe.
 #
-# Packages/EverywhereCore wraps a prebuilt Mihomo-only xcframework published
+# Packages/MihomeCore wraps a prebuilt Mihomo-only XCFramework published
 # in this repository's GitHub Releases. The app target embeds it; the network
 # extension target links and loads from the host app at runtime.
 
 require 'xcodeproj'
 
-PROJECT_PATH       = File.expand_path('../Everywhere.xcodeproj', __dir__)
+PROJECT_PATH       = File.expand_path('../MihomeProxy.xcodeproj', __dir__)
 DASHBOARD_REL_PATH = 'ThirdParty/zashboard'
 DASHBOARD_NAME     = 'zashboard'
 DEPLOYMENT_TARGET  = '15.0'
 SHARED_FOLDER      = 'Shared'
 
-EVERYWHERE_CORE_UPSTREAM_REPO = 'https://github.com/NodePassProject/EverywhereCore'
-EVERYWHERE_CORE_LOCAL_PATH    = 'Packages/EverywhereCore'
-EVERYWHERE_CORE_PRODUCT       = 'EverywhereCore'
+MIHOME_CORE_UPSTREAM_REPO = 'https://github.com/NodePassProject/EverywhereCore'
+MIHOME_CORE_LEGACY_PATH   = 'Packages/EverywhereCore'
+MIHOME_CORE_LOCAL_PATH    = 'Packages/MihomeCore'
+MIHOME_CORE_PRODUCT       = 'MihomeCore'
 
 RUNESTONE_URL = 'https://github.com/simonbs/Runestone'
 RUNESTONE_REQ = { 'kind' => 'upToNextMajorVersion', 'minimumVersion' => '0.5.0' }
@@ -27,12 +28,14 @@ TS_LANG_PRODUCTS = %w[TreeSitterYAMLRunestone]
 
 project = Xcodeproj::Project.open(PROJECT_PATH)
 
-app_target = project.targets.find { |t| t.name == 'Everywhere' } or abort 'Everywhere target missing'
-ne_target  = project.targets.find { |t| t.name == 'EverywhereNE' } or abort 'EverywhereNE target missing'
+app_target = project.targets.find { |t| t.name == 'MihomeProxy' } or abort 'MihomeProxy target missing'
+ne_target  = project.targets.find { |t| t.name == 'MihomeProxyNE' } or abort 'MihomeProxyNE target missing'
 
 # --- Tear down any prior local-xcframework wiring -------------------------
-# Self-healing for repos previously wired against Frameworks/EverywhereCore.xcframework.
-stale_xcfw = project.files.select { |f| f.path == 'Frameworks/EverywhereCore.xcframework' }
+# Self-healing for repositories previously wired against a manual XCFramework.
+stale_xcfw = project.files.select do |file|
+  %w[Frameworks/EverywhereCore.xcframework Frameworks/MihomeCore.xcframework].include?(file.path)
+end
 stale_xcfw.each do |ref|
   project.targets.each do |t|
     t.frameworks_build_phase.files.select { |bf| bf.file_ref == ref }.each do |bf|
@@ -118,10 +121,7 @@ end
 # orphaned by an earlier partial run; deleting a list entry alone leaves the
 # object in the pbxproj, so remove_from_project is explicit (cf. the stale
 # xcframework teardown above). A no-op when absent, so re-running self-heals.
-def remove_swift_package(project, url)
-  pkg = project.objects.find do |o|
-    o.isa == 'XCRemoteSwiftPackageReference' && o.repositoryURL == url
-  end
+def remove_swift_package_reference(project, pkg)
   return unless pkg
 
   project.objects.select do |o|
@@ -140,6 +140,20 @@ def remove_swift_package(project, url)
   pkg.remove_from_project
 end
 
+def remove_swift_package(project, url)
+  pkg = project.objects.find do |o|
+    o.isa == 'XCRemoteSwiftPackageReference' && o.repositoryURL == url
+  end
+  remove_swift_package_reference(project, pkg)
+end
+
+def remove_local_swift_package(project, relative_path)
+  pkg = project.objects.find do |o|
+    o.isa == 'XCLocalSwiftPackageReference' && o.relative_path == relative_path
+  end
+  remove_swift_package_reference(project, pkg)
+end
+
 def remove_swift_product(project, product_name)
   project.objects.select do |o|
     o.isa == 'XCSwiftPackageProductDependency' && o.product_name == product_name
@@ -154,13 +168,14 @@ def remove_swift_product(project, product_name)
   end
 end
 
-# --- EverywhereCore (both targets) ---------------------------------------
+# --- MihomeCore (both targets) -------------------------------------------
 # Remove the old shared three-engine binary before wiring the repository-local
 # package that downloads the Mihomo-only release artifact.
-remove_swift_package(project, EVERYWHERE_CORE_UPSTREAM_REPO)
-core_pkg = ensure_local_swift_package(project, EVERYWHERE_CORE_LOCAL_PATH)
-core_app_dep = add_product_dep(app_target, project, core_pkg, EVERYWHERE_CORE_PRODUCT)
-core_ne_dep  = add_product_dep(ne_target,  project, core_pkg, EVERYWHERE_CORE_PRODUCT)
+remove_swift_package(project, MIHOME_CORE_UPSTREAM_REPO)
+remove_local_swift_package(project, MIHOME_CORE_LEGACY_PATH)
+core_pkg = ensure_local_swift_package(project, MIHOME_CORE_LOCAL_PATH)
+core_app_dep = add_product_dep(app_target, project, core_pkg, MIHOME_CORE_PRODUCT)
+core_ne_dep  = add_product_dep(ne_target,  project, core_pkg, MIHOME_CORE_PRODUCT)
 link_product(app_target, project, core_app_dep)
 link_product(ne_target,  project, core_ne_dep)
 
@@ -175,7 +190,7 @@ stale_embed = app_target.copy_files_build_phases.find do |p|
 end
 if stale_embed
   stale_embed.files.select { |bf|
-    bf.product_ref&.product_name == EVERYWHERE_CORE_PRODUCT
+    bf.product_ref&.product_name == MIHOME_CORE_PRODUCT
   }.each { |bf| stale_embed.files.delete(bf) }
   if stale_embed.files.empty?
     app_target.build_phases.delete(stale_embed)
@@ -284,4 +299,4 @@ end
 end
 
 project.save
-puts "Wired local Mihomo-only EverywhereCore + Runestone + zashboard into #{PROJECT_PATH}"
+puts "Wired local Mihomo-only MihomeCore + Runestone + zashboard into #{PROJECT_PATH}"

@@ -1,6 +1,6 @@
 //
 //  Configuration.swift
-//  Everywhere
+//  Mihome Proxy
 //
 //  Created by NodePassProject on 5/2/26.
 //

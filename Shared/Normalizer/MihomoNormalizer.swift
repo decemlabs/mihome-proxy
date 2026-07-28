@@ -1,6 +1,6 @@
 //
 //  MihomoNormalizer.swift
-//  Everywhere
+//  Mihome Proxy
 //
 //  Created by NodePassProject on 5/24/26.
 //
