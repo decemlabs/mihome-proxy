@@ -3,6 +3,8 @@ build*.log
 DerivedData/
 *.xcuserdatad/
 xcuserdata/
+Packages/EverywhereCore/EverywhereCore.xcframework/
+Packages/EverywhereCore/EverywhereCore-*.xcframework.zip
 
 # macOS
 .DS_Store

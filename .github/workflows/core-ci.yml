@@ -1,0 +1,66 @@
+name: Mihomo core CI
+
+on:
+  pull_request:
+    paths:
+      - "Packages/EverywhereCore/**"
+      - ".github/workflows/core-*.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "Packages/EverywhereCore/**"
+      - ".github/workflows/core-*.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: macos-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: Packages/EverywhereCore/go/go.mod
+          cache: true
+          cache-dependency-path: Packages/EverywhereCore/go/go.sum
+
+      - name: Verify Go module
+        working-directory: Packages/EverywhereCore/go
+        run: |
+          set -euo pipefail
+          go mod tidy
+          git diff --exit-code -- go.mod go.sum
+          go mod verify
+          go test ./...
+          if go list -m all | grep -Eq \
+            'github\.com/(sagernet/sing-box|xtls/xray-core)( |$)'; then
+            echo "Forbidden proxy core dependency found" >&2
+            exit 1
+          fi
+
+      - name: Build XCFramework
+        run: Packages/EverywhereCore/Scripts/build.sh
+
+      - name: Validate slices and package
+        run: |
+          set -euo pipefail
+          plist=Packages/EverywhereCore/EverywhereCore.xcframework/Info.plist
+          plutil -p "$plist" | grep -q '"LibraryIdentifier" => "ios-arm64"'
+          plutil -p "$plist" | grep -q \
+            '"LibraryIdentifier" => "ios-arm64_x86_64-simulator"'
+          test "$(MIHOME_LOCAL_CORE=1 swift package \
+            --package-path Packages/EverywhereCore dump-package \
+            | jq -r '.name')" = "EverywhereCore"
+
+      - name: Report sizes
+        run: |
+          du -sh Packages/EverywhereCore/EverywhereCore.xcframework
+          find Packages/EverywhereCore/EverywhereCore.xcframework \
+            -type f -name EverywhereCore -exec ls -lh {} \;
