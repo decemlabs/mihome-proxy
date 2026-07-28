@@ -28,7 +28,7 @@ installing on a device. Replace that starter reverse-DNS identifier with one
 you control before distribution.
 
 `build.sh` wires Runestone, YAML syntax highlighting, zashboard, and the local
-`Packages/MihomeCore` Swift package into the Xcode project. The package
+`MihomeCore` Swift package into the Xcode project. The package
 downloads the checksum-verified Mihomo-only binary from this repository's
 GitHub Releases. To run a simulator smoke build:
 
@@ -46,7 +46,7 @@ brew install go
 
 ## MihomeCore
 
-The Go bridge source lives in `Packages/MihomeCore/`. It retains the
+The Go bridge source lives in `MihomeCore/`. It retains the
 original gomobile API used by the Network Extension but contains no Xray or
 sing-box engine. GitHub Actions tracks stable Mihomo releases and publishes
 device/simulator XCFrameworks under `core-vYYYY.MM.DD` tags.

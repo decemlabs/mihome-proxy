@@ -1,4 +1,4 @@
-module github.com/decemlabs/mihome-proxy/packages/mihomecore
+module github.com/decemlabs/mihome-proxy/mihomecore
 
 go 1.26
 

@@ -3,7 +3,7 @@
 # packages, and the zashboard dashboard resource bundle into
 # MihomeProxy.xcodeproj (iOS). Idempotent — running it twice is safe.
 #
-# Packages/MihomeCore wraps a prebuilt Mihomo-only XCFramework published
+# MihomeCore/ wraps a prebuilt Mihomo-only XCFramework published
 # in this repository's GitHub Releases. The app target embeds it; the network
 # extension target links and loads from the host app at runtime.
 
@@ -16,8 +16,8 @@ DEPLOYMENT_TARGET  = '15.0'
 SHARED_FOLDER      = 'Shared'
 
 MIHOME_CORE_UPSTREAM_REPO = 'https://github.com/NodePassProject/EverywhereCore'
-MIHOME_CORE_LEGACY_PATH   = 'Packages/EverywhereCore'
-MIHOME_CORE_LOCAL_PATH    = 'Packages/MihomeCore'
+MIHOME_CORE_LEGACY_PATHS  = %w[Packages/EverywhereCore Packages/MihomeCore]
+MIHOME_CORE_LOCAL_PATH    = 'MihomeCore'
 MIHOME_CORE_PRODUCT       = 'MihomeCore'
 
 RUNESTONE_URL = 'https://github.com/simonbs/Runestone'
@@ -172,7 +172,9 @@ end
 # Remove the old shared three-engine binary before wiring the repository-local
 # package that downloads the Mihomo-only release artifact.
 remove_swift_package(project, MIHOME_CORE_UPSTREAM_REPO)
-remove_local_swift_package(project, MIHOME_CORE_LEGACY_PATH)
+MIHOME_CORE_LEGACY_PATHS.each do |legacy_path|
+  remove_local_swift_package(project, legacy_path)
+end
 core_pkg = ensure_local_swift_package(project, MIHOME_CORE_LOCAL_PATH)
 core_app_dep = add_product_dep(app_target, project, core_pkg, MIHOME_CORE_PRODUCT)
 core_ne_dep  = add_product_dep(ne_target,  project, core_pkg, MIHOME_CORE_PRODUCT)

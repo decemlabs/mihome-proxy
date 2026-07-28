@@ -3,8 +3,8 @@ build*.log
 DerivedData/
 *.xcuserdatad/
 xcuserdata/
-Packages/MihomeCore/*.xcframework/
-Packages/MihomeCore/*.xcframework.zip
+MihomeCore/*.xcframework/
+MihomeCore/*.xcframework.zip
 
 # macOS
 .DS_Store

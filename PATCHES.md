@@ -1,7 +1,7 @@
 # Mihome Proxy build notes
 
 Mihome Proxy keeps its Mihomo-only Go bridge in
-`Packages/MihomeCore/`. The Swift package downloads a prebuilt XCFramework
+`MihomeCore/`. The Swift package downloads a prebuilt XCFramework
 from this repository's `core-*` releases, while `MIHOME_LOCAL_CORE=1` selects
 the locally generated framework.
 

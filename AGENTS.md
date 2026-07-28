@@ -4,7 +4,7 @@
 
 This is a native iOS Mihomo VPN client. `MihomeProxy/` contains the SwiftUI host app: configuration screens, editor, dashboard, resources, and app entitlements. `MihomeProxyNE/` is the Packet Tunnel Network Extension. Code shared by both targets lives in `Shared/`, including Core Data, App Group helpers, configuration normalization, and starter YAML. Keep tunnel-specific iOS APIs in `MihomeProxyNE/`; do not import them into shared UI code.
 
-`Packages/MihomeCore/` contains the gomobile bridge and its local Swift package; generated XCFrameworks stay untracked. `ThirdParty/zashboard/` is a checked-in vendor bundle. Xcode and SwiftPM wiring is maintained in `MihomeProxy.xcodeproj/` and `Scripts/wire_project.rb`.
+`MihomeCore/` contains the gomobile bridge and its local Swift package; generated XCFrameworks stay untracked. `ThirdParty/zashboard/` is a checked-in vendor bundle. Xcode and SwiftPM wiring is maintained in `MihomeProxy.xcodeproj/` and `Scripts/wire_project.rb`.
 
 ## Build, Test, and Development Commands
 
@@ -21,7 +21,7 @@ Use four-space indentation and standard Swift formatting. Types use `UpperCamelC
 
 ## Testing Guidelines
 
-There is no XCTest target. Run `go test ./...` in `Packages/MihomeCore/go` for bridge changes and verify its module graph contains neither sing-box nor xray-core. Before submitting, run the simulator build and manually check the affected UI flow. Test a real tunnel on device when modifying `MihomeProxyNE/`, entitlements, or VPN settings.
+There is no XCTest target. Run `go test ./...` in `MihomeCore/go` for bridge changes and verify its module graph contains neither sing-box nor xray-core. Before submitting, run the simulator build and manually check the affected UI flow. Test a real tunnel on device when modifying `MihomeProxyNE/`, entitlements, or VPN settings.
 
 ## Commit & Pull Request Guidelines
 

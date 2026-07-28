@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Top-level build helper. The zashboard dashboard is checked into
-# ThirdParty/zashboard/ and Packages/MihomeCore wraps the released
+# ThirdParty/zashboard/ and MihomeCore/ wraps the released
 # Mihomo-only XCFramework.
 #
 # --build-core builds a local XCFramework.
@@ -33,7 +33,7 @@ if [[ -z "${DEVELOPER_DIR:-}" && -d /Applications/Xcode.app/Contents/Developer ]
 fi
 
 if [[ "$build_core" == true ]]; then
-  Packages/MihomeCore/Scripts/build.sh
+  MihomeCore/Scripts/build.sh
   export MIHOME_LOCAL_CORE=1
 fi
 
@@ -44,7 +44,7 @@ ruby Scripts/wire_project.rb
 
 if [[ "$build_app" == true ]]; then
   if [[ "${MIHOME_LOCAL_CORE:-0}" == "1" && \
-    ! -d Packages/MihomeCore/MihomeCore.xcframework ]]; then
+    ! -d MihomeCore/MihomeCore.xcframework ]]; then
     echo "error: local core is missing; run with --build-core" >&2
     exit 1
   fi

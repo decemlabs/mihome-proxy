@@ -31,13 +31,13 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v7
         with:
-          go-version-file: Packages/MihomeCore/go/go.mod
+          go-version-file: MihomeCore/go/go.mod
           cache: true
-          cache-dependency-path: Packages/MihomeCore/go/go.sum
+          cache-dependency-path: MihomeCore/go/go.sum
 
       - name: Detect Mihomo version
         id: versions
-        working-directory: Packages/MihomeCore/go
+        working-directory: MihomeCore/go
         run: |
           set -euo pipefail
           current=$(go list -m -f '{{.Version}}' github.com/metacubex/mihomo)
@@ -65,7 +65,7 @@ jobs:
 
       - name: Update Mihomo
         if: steps.proceed.outputs.release == 'true'
-        working-directory: Packages/MihomeCore/go
+        working-directory: MihomeCore/go
         run: |
           set -euo pipefail
           go get \
@@ -81,7 +81,7 @@ jobs:
 
       - name: Build XCFramework
         if: steps.proceed.outputs.release == 'true'
-        run: Packages/MihomeCore/Scripts/build.sh
+        run: MihomeCore/Scripts/build.sh
 
       - name: Select release tag
         if: steps.proceed.outputs.release == 'true'
@@ -103,7 +103,7 @@ jobs:
         run: |
           set -euo pipefail
           tag="${{ steps.tag.outputs.tag }}"
-          core=Packages/MihomeCore
+          core=MihomeCore
           zip="$core/MihomeCore-$tag.xcframework.zip"
           ditto -c -k --sequesterRsrc --keepParent \
             "$core/MihomeCore.xcframework" "$zip"
@@ -126,9 +126,9 @@ jobs:
           git config user.email \
             "41898282+github-actions[bot]@users.noreply.github.com"
           git add \
-            Packages/MihomeCore/Package.swift \
-            Packages/MihomeCore/go/go.mod \
-            Packages/MihomeCore/go/go.sum
+            MihomeCore/Package.swift \
+            MihomeCore/go/go.mod \
+            MihomeCore/go/go.sum
           git commit -m "Release $tag"
           git tag -a "$tag" -m "$tag"
           git push origin \

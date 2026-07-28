@@ -7,15 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0E524D1EC42CAE9B6AA8FB11 /* MihomeCore in Frameworks */ = {isa = PBXBuildFile; productRef = 1E4ACE241D4C02195FE49BCF /* MihomeCore */; };
-		24E1A1B03AD27815EFBD4C2B /* MihomeCore in Frameworks */ = {isa = PBXBuildFile; productRef = 92F1419C5AF60DFAC23B3CE4 /* MihomeCore */; };
 		5F5762E26C734B0D4F782C4B /* Runestone in Frameworks */ = {isa = PBXBuildFile; productRef = 4DC5B599D63656168B7AB4AD /* Runestone */; };
 		6489290499024A6A49A18665 /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2724A4F89A96B133F540CB /* libresolv.tbd */; };
+		7C7199920DBCEB61416FAD82 /* MihomeCore in Frameworks */ = {isa = PBXBuildFile; productRef = 46C67747BFEF6EA1102E0923 /* MihomeCore */; };
 		7FAB6E1B99843FBC3CEF9BD3 /* TreeSitterYAMLRunestone in Frameworks */ = {isa = PBXBuildFile; productRef = 41465227A138948FE50A7E53 /* TreeSitterYAMLRunestone */; };
 		8DA46DEAF1392B6586DBC9FC /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2724A4F89A96B133F540CB /* libresolv.tbd */; };
 		CB0BA4282FA6277800E37B2C /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB0BA4272FA6277800E37B2C /* NetworkExtension.framework */; };
 		CB0BA4302FA6277800E37B2C /* MihomeProxyNE.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CB0BA4252FA6277800E37B2C /* MihomeProxyNE.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		E21CF12D020F260C78EF147B /* zashboard in Resources */ = {isa = PBXBuildFile; fileRef = 1197532FC5218FEC63D188EA /* zashboard */; };
+		F82DC2D0AE77B469D52CF0CC /* MihomeCore in Frameworks */ = {isa = PBXBuildFile; productRef = A02D1AF94B9496CE17BB81F6 /* MihomeCore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -101,7 +101,7 @@
 				5F5762E26C734B0D4F782C4B /* Runestone in Frameworks */,
 				8DA46DEAF1392B6586DBC9FC /* libresolv.tbd in Frameworks */,
 				7FAB6E1B99843FBC3CEF9BD3 /* TreeSitterYAMLRunestone in Frameworks */,
-				24E1A1B03AD27815EFBD4C2B /* MihomeCore in Frameworks */,
+				F82DC2D0AE77B469D52CF0CC /* MihomeCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -111,7 +111,7 @@
 			files = (
 				CB0BA4282FA6277800E37B2C /* NetworkExtension.framework in Frameworks */,
 				6489290499024A6A49A18665 /* libresolv.tbd in Frameworks */,
-				0E524D1EC42CAE9B6AA8FB11 /* MihomeCore in Frameworks */,
+				7C7199920DBCEB61416FAD82 /* MihomeCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -173,7 +173,7 @@
 			packageProductDependencies = (
 				4DC5B599D63656168B7AB4AD /* Runestone */,
 				41465227A138948FE50A7E53 /* TreeSitterYAMLRunestone */,
-				92F1419C5AF60DFAC23B3CE4 /* MihomeCore */,
+				A02D1AF94B9496CE17BB81F6 /* MihomeCore */,
 			);
 			productName = MihomeProxy;
 			productReference = CB0BA4102FA6272C00E37B2C /* MihomeProxy.app */;
@@ -197,7 +197,7 @@
 			);
 			name = MihomeProxyNE;
 			packageProductDependencies = (
-				1E4ACE241D4C02195FE49BCF /* MihomeCore */,
+				46C67747BFEF6EA1102E0923 /* MihomeCore */,
 			);
 			productName = MihomeProxyNE;
 			productReference = CB0BA4252FA6277800E37B2C /* MihomeProxyNE.appex */;
@@ -234,7 +234,7 @@
 			packageReferences = (
 				803E3EBB055B6F1C161E71E9 /* XCRemoteSwiftPackageReference "Runestone" */,
 				21BE8ADEADB6191676A9B4DB /* XCRemoteSwiftPackageReference "TreeSitterLanguages" */,
-				43A2B51C1A0D9A6AAB073384 /* XCLocalSwiftPackageReference "MihomeCore" */,
+				9271B4C1B2AEF7BE222BB17A /* XCLocalSwiftPackageReference "MihomeCore" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = CB0BA4112FA6272C00E37B2C /* Products */;
@@ -577,9 +577,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		43A2B51C1A0D9A6AAB073384 /* XCLocalSwiftPackageReference "MihomeCore" */ = {
+		9271B4C1B2AEF7BE222BB17A /* XCLocalSwiftPackageReference "MihomeCore" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = Packages/MihomeCore;
+			relativePath = MihomeCore;
 		};
 /* End XCLocalSwiftPackageReference section */
 
@@ -603,24 +603,24 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		1E4ACE241D4C02195FE49BCF /* MihomeCore */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 43A2B51C1A0D9A6AAB073384 /* XCLocalSwiftPackageReference "MihomeCore" */;
-			productName = MihomeCore;
-		};
 		41465227A138948FE50A7E53 /* TreeSitterYAMLRunestone */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 21BE8ADEADB6191676A9B4DB /* XCRemoteSwiftPackageReference "TreeSitterLanguages" */;
 			productName = TreeSitterYAMLRunestone;
+		};
+		46C67747BFEF6EA1102E0923 /* MihomeCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9271B4C1B2AEF7BE222BB17A /* XCLocalSwiftPackageReference "MihomeCore" */;
+			productName = MihomeCore;
 		};
 		4DC5B599D63656168B7AB4AD /* Runestone */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 803E3EBB055B6F1C161E71E9 /* XCRemoteSwiftPackageReference "Runestone" */;
 			productName = Runestone;
 		};
-		92F1419C5AF60DFAC23B3CE4 /* MihomeCore */ = {
+		A02D1AF94B9496CE17BB81F6 /* MihomeCore */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 43A2B51C1A0D9A6AAB073384 /* XCLocalSwiftPackageReference "MihomeCore" */;
+			package = 9271B4C1B2AEF7BE222BB17A /* XCLocalSwiftPackageReference "MihomeCore" */;
 			productName = MihomeCore;
 		};
 /* End XCSwiftPackageProductDependency section */
