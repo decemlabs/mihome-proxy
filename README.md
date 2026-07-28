@@ -16,7 +16,7 @@ provides live traffic, proxy, and rule information.
 ## Build from source
 
 ```bash
-git clone <your-fork-url> mihome-proxy
+git clone https://github.com/decemlabs/mihome-proxy
 cd mihome-proxy
 ./build.sh
 open Everywhere.xcodeproj
@@ -27,26 +27,42 @@ Network Extension capability, and App Group for `com.andre.mihomeproxy` before
 installing on a device. Replace that starter reverse-DNS identifier with one
 you control before distribution.
 
-`build.sh` wires Runestone, YAML syntax highlighting, zashboard, and the
-prebuilt `EverywhereCore` dependency into the Xcode project. To run a simulator
-smoke build as part of the setup:
+`build.sh` wires Runestone, YAML syntax highlighting, zashboard, and the local
+`Packages/EverywhereCore` Swift package into the Xcode project. The package
+downloads the checksum-verified Mihomo-only binary from this repository's
+GitHub Releases. To run a simulator smoke build:
 
 ```bash
 ./build.sh --build-app
 ```
 
-## Current core limitation
+Core development requires Go. Build the XCFramework locally and make the app
+consume it in one command:
 
-The application starts only Mihomo and has no Xray or sing-box configuration
-paths. It temporarily consumes the upstream `EverywhereCore` XCFramework,
-which still bundles those engines internally. Forking that dependency into a
-Mihomo-only XCFramework is the next step for reducing the final IPA size.
+```bash
+brew install go
+./build.sh --build-core --build-app
+```
+
+## Mihomo-only Core
+
+The Go bridge source lives in `Packages/EverywhereCore/`. It retains the
+original gomobile API used by the Network Extension but contains no Xray or
+sing-box engine. GitHub Actions tracks stable Mihomo releases and publishes
+device/simulator XCFrameworks under `core-vYYYY.MM.DD` tags.
+
+The first Mihomo-only release reduced the iOS arm64 library from 117 MB to
+65 MB and the downloadable ZIP from 171 MB to 59 MB. An identical unsigned
+Release build reduced the packaged app from 35 MB to 22 MB (36%). Full Mihomo
+protocol support remains enabled.
 
 ## Acknowledgements
 
 - [mihomo](https://github.com/MetaCubeX/mihomo)
 - [zashboard](https://github.com/Zephyruso/zashboard)
 - [Runestone](https://github.com/simonbs/Runestone)
+- [EverywhereCore](https://github.com/NodePassProject/EverywhereCore), the
+  upstream bridge from which the local Mihomo-only package was derived
 
 ## License
 

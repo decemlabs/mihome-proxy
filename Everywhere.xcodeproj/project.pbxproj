@@ -7,11 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		21F6AB21D5453421EB6AED73 /* EverywhereCore in Frameworks */ = {isa = PBXBuildFile; productRef = AEC527B12E302B3F440C56C4 /* EverywhereCore */; };
+		0E524D1EC42CAE9B6AA8FB11 /* EverywhereCore in Frameworks */ = {isa = PBXBuildFile; productRef = 1E4ACE241D4C02195FE49BCF /* EverywhereCore */; };
+		24E1A1B03AD27815EFBD4C2B /* EverywhereCore in Frameworks */ = {isa = PBXBuildFile; productRef = 92F1419C5AF60DFAC23B3CE4 /* EverywhereCore */; };
 		5F5762E26C734B0D4F782C4B /* Runestone in Frameworks */ = {isa = PBXBuildFile; productRef = 4DC5B599D63656168B7AB4AD /* Runestone */; };
 		6489290499024A6A49A18665 /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2724A4F89A96B133F540CB /* libresolv.tbd */; };
 		7FAB6E1B99843FBC3CEF9BD3 /* TreeSitterYAMLRunestone in Frameworks */ = {isa = PBXBuildFile; productRef = 41465227A138948FE50A7E53 /* TreeSitterYAMLRunestone */; };
-		8A430E870A41435438F9F399 /* EverywhereCore in Frameworks */ = {isa = PBXBuildFile; productRef = B672C232E19E5E5F670A2F6D /* EverywhereCore */; };
 		8DA46DEAF1392B6586DBC9FC /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2724A4F89A96B133F540CB /* libresolv.tbd */; };
 		CB0BA4282FA6277800E37B2C /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB0BA4272FA6277800E37B2C /* NetworkExtension.framework */; };
 		CB0BA4302FA6277800E37B2C /* MihomeProxyNE.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CB0BA4252FA6277800E37B2C /* MihomeProxyNE.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -70,6 +70,8 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		9972969AE7F1F3E248C5CD1D /* Shared */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = Shared;
 			sourceTree = "<group>";
 		};
@@ -99,7 +101,7 @@
 				5F5762E26C734B0D4F782C4B /* Runestone in Frameworks */,
 				8DA46DEAF1392B6586DBC9FC /* libresolv.tbd in Frameworks */,
 				7FAB6E1B99843FBC3CEF9BD3 /* TreeSitterYAMLRunestone in Frameworks */,
-				8A430E870A41435438F9F399 /* EverywhereCore in Frameworks */,
+				24E1A1B03AD27815EFBD4C2B /* EverywhereCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -109,7 +111,7 @@
 			files = (
 				CB0BA4282FA6277800E37B2C /* NetworkExtension.framework in Frameworks */,
 				6489290499024A6A49A18665 /* libresolv.tbd in Frameworks */,
-				21F6AB21D5453421EB6AED73 /* EverywhereCore in Frameworks */,
+				0E524D1EC42CAE9B6AA8FB11 /* EverywhereCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -171,7 +173,7 @@
 			packageProductDependencies = (
 				4DC5B599D63656168B7AB4AD /* Runestone */,
 				41465227A138948FE50A7E53 /* TreeSitterYAMLRunestone */,
-				B672C232E19E5E5F670A2F6D /* EverywhereCore */,
+				92F1419C5AF60DFAC23B3CE4 /* EverywhereCore */,
 			);
 			productName = Everywhere;
 			productReference = CB0BA4102FA6272C00E37B2C /* MihomeProxy.app */;
@@ -195,7 +197,7 @@
 			);
 			name = EverywhereNE;
 			packageProductDependencies = (
-				AEC527B12E302B3F440C56C4 /* EverywhereCore */,
+				1E4ACE241D4C02195FE49BCF /* EverywhereCore */,
 			);
 			productName = EverywhereNE;
 			productReference = CB0BA4252FA6277800E37B2C /* MihomeProxyNE.appex */;
@@ -232,7 +234,7 @@
 			packageReferences = (
 				803E3EBB055B6F1C161E71E9 /* XCRemoteSwiftPackageReference "Runestone" */,
 				21BE8ADEADB6191676A9B4DB /* XCRemoteSwiftPackageReference "TreeSitterLanguages" */,
-				2B8487E04E12B2EE3EBD6BE7 /* XCRemoteSwiftPackageReference "EverywhereCore" */,
+				43A2B51C1A0D9A6AAB073384 /* XCLocalSwiftPackageReference "EverywhereCore" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = CB0BA4112FA6272C00E37B2C /* Products */;
@@ -430,7 +432,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -468,7 +470,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -576,6 +578,13 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		43A2B51C1A0D9A6AAB073384 /* XCLocalSwiftPackageReference "EverywhereCore" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/EverywhereCore;
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCRemoteSwiftPackageReference section */
 		21BE8ADEADB6191676A9B4DB /* XCRemoteSwiftPackageReference "TreeSitterLanguages" */ = {
 			isa = XCRemoteSwiftPackageReference;
@@ -583,14 +592,6 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 0.1.10;
-			};
-		};
-		2B8487E04E12B2EE3EBD6BE7 /* XCRemoteSwiftPackageReference "EverywhereCore" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/NodePassProject/EverywhereCore";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2026.05.18;
 			};
 		};
 		803E3EBB055B6F1C161E71E9 /* XCRemoteSwiftPackageReference "Runestone" */ = {
@@ -604,6 +605,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		1E4ACE241D4C02195FE49BCF /* EverywhereCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 43A2B51C1A0D9A6AAB073384 /* XCLocalSwiftPackageReference "EverywhereCore" */;
+			productName = EverywhereCore;
+		};
 		41465227A138948FE50A7E53 /* TreeSitterYAMLRunestone */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 21BE8ADEADB6191676A9B4DB /* XCRemoteSwiftPackageReference "TreeSitterLanguages" */;
@@ -614,14 +620,9 @@
 			package = 803E3EBB055B6F1C161E71E9 /* XCRemoteSwiftPackageReference "Runestone" */;
 			productName = Runestone;
 		};
-		AEC527B12E302B3F440C56C4 /* EverywhereCore */ = {
+		92F1419C5AF60DFAC23B3CE4 /* EverywhereCore */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 2B8487E04E12B2EE3EBD6BE7 /* XCRemoteSwiftPackageReference "EverywhereCore" */;
-			productName = EverywhereCore;
-		};
-		B672C232E19E5E5F670A2F6D /* EverywhereCore */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 2B8487E04E12B2EE3EBD6BE7 /* XCRemoteSwiftPackageReference "EverywhereCore" */;
+			package = 43A2B51C1A0D9A6AAB073384 /* XCLocalSwiftPackageReference "EverywhereCore" */;
 			productName = EverywhereCore;
 		};
 /* End XCSwiftPackageProductDependency section */

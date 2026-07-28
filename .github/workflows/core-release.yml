@@ -24,12 +24,12 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
       - name: Set up Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v7
         with:
           go-version-file: Packages/EverywhereCore/go/go.mod
           cache: true
@@ -108,9 +108,14 @@ jobs:
           ditto -c -k --sequesterRsrc --keepParent \
             "$core/EverywhereCore.xcframework" "$zip"
           checksum=$(swift package compute-checksum "$zip")
+          zip_bytes=$(stat -f%z "$zip")
+          device_binary="$core/EverywhereCore.xcframework/ios-arm64/EverywhereCore.framework/EverywhereCore"
+          device_bytes=$(stat -f%z "$device_binary")
           "$core/Scripts/render-package.sh" "$tag" "$checksum"
           echo "zip=$zip" >> "$GITHUB_OUTPUT"
           echo "checksum=$checksum" >> "$GITHUB_OUTPUT"
+          echo "zip_bytes=$zip_bytes" >> "$GITHUB_OUTPUT"
+          echo "device_bytes=$device_bytes" >> "$GITHUB_OUTPUT"
 
       - name: Commit and tag
         if: steps.proceed.outputs.release == 'true'
@@ -142,6 +147,8 @@ jobs:
             echo
             echo "Mihomo: ${{ steps.versions.outputs.current }} → ${{ steps.versions.outputs.latest }}"
             echo "SwiftPM checksum: ${{ steps.artifact.outputs.checksum }}"
+            echo "Release ZIP: ${{ steps.artifact.outputs.zip_bytes }} bytes"
+            echo "iOS arm64 library: ${{ steps.artifact.outputs.device_bytes }} bytes"
           } > "$notes_file"
           gh release create "$tag" \
             "${{ steps.artifact.outputs.zip }}" \
@@ -150,14 +157,4 @@ jobs:
 
       - name: Smoke-build Mihome Proxy
         if: steps.proceed.outputs.release == 'true'
-        run: |
-          set -euo pipefail
-          ruby Scripts/wire_project.rb
-          xcodebuild \
-            -project Everywhere.xcodeproj \
-            -scheme Everywhere \
-            -sdk iphonesimulator \
-            -destination "generic/platform=iOS Simulator" \
-            -configuration Debug \
-            CODE_SIGNING_ALLOWED=NO \
-            build
+        run: ./build.sh --build-app

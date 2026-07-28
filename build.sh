@@ -1,22 +1,53 @@
 #!/usr/bin/env bash
-# Top-level: wire the Xcode project. The zashboard dashboard is checked
-# into ThirdParty/zashboard/ as a prebuilt static bundle, and the Go
-# core ships as a prebuilt xcframework via the EverywhereCore SwiftPM
-# package — so there is no local source build step.
+# Top-level build helper. The zashboard dashboard is checked into
+# ThirdParty/zashboard/ and Packages/EverywhereCore wraps the released
+# Mihomo-only XCFramework.
 #
-# Pass `--build-app` as a final step to also run `xcodebuild` for the
-# iOS Simulator as a smoke test.
+# --build-core builds a local XCFramework.
+# --build-app runs the unsigned iOS Simulator smoke build.
+# Passing both makes the app build consume the freshly built local core.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$ROOT"
+
+build_core=false
+build_app=false
+for argument in "$@"; do
+  case "$argument" in
+    --build-core)
+      build_core=true
+      ;;
+    --build-app)
+      build_app=true
+      ;;
+    *)
+      echo "usage: $0 [--build-core] [--build-app]" >&2
+      exit 2
+      ;;
+  esac
+done
+
+if [[ -z "${DEVELOPER_DIR:-}" && -d /Applications/Xcode.app/Contents/Developer ]]; then
+  export DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer
+fi
+
+if [[ "$build_core" == true ]]; then
+  Packages/EverywhereCore/Scripts/build.sh
+  export MIHOME_LOCAL_CORE=1
+fi
 
 # wire_project.rb needs the xcodeproj gem; install it (user dir, no sudo) if absent.
 ruby -e "require 'xcodeproj'" 2>/dev/null || gem install --user-install xcodeproj
 
 ruby Scripts/wire_project.rb
 
-if [[ "${1:-}" == "--build-app" ]]; then
+if [[ "$build_app" == true ]]; then
+  if [[ "${MIHOME_LOCAL_CORE:-0}" == "1" && \
+    ! -d Packages/EverywhereCore/EverywhereCore.xcframework ]]; then
+    echo "error: local core is missing; run with --build-core" >&2
+    exit 1
+  fi
   echo "→ xcodebuild simulator smoke test"
   xcodebuild \
     -project Everywhere.xcodeproj \

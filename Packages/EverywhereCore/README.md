@@ -10,8 +10,7 @@ transitive dependencies retain their respective licenses.
 ## Local build
 
 ```sh
-Packages/EverywhereCore/Scripts/build.sh
-MIHOME_LOCAL_CORE=1 ./build.sh --build-app
+./build.sh --build-core --build-app
 ```
 
 The generated `EverywhereCore.xcframework` contains iOS device and simulator

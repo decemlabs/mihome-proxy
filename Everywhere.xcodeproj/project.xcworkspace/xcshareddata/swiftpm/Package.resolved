@@ -2,15 +2,6 @@
   "originHash" : "4eda72003edd15f0b85ddab97bd542e0a23101687fce75d99fcb5feca2d48fa3",
   "pins" : [
     {
-      "identity" : "everywherecore",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/NodePassProject/EverywhereCore",
-      "state" : {
-        "revision" : "f801375b7a36d08bca0e8d73d4900f5973f5f676",
-        "version" : "2026.6.25"
-      }
-    },
-    {
       "identity" : "runestone",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/simonbs/Runestone",

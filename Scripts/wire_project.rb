@@ -1,11 +1,11 @@
 #!/usr/bin/env ruby
-# Wires the EverywhereCore SwiftPM package, the Runestone editor
+# Wires the local EverywhereCore SwiftPM package, the Runestone editor
 # packages, and the zashboard dashboard resource bundle into
 # Everywhere.xcodeproj (iOS). Idempotent — running it twice is safe.
 #
-# EverywhereCore ships as a prebuilt xcframework on GitHub Releases;
-# SwiftPM downloads and verifies it. The app target embeds it; the
-# network extension target links and loads from the host app at runtime.
+# Packages/EverywhereCore wraps a prebuilt Mihomo-only xcframework published
+# in this repository's GitHub Releases. The app target embeds it; the network
+# extension target links and loads from the host app at runtime.
 
 require 'xcodeproj'
 
@@ -15,10 +15,9 @@ DASHBOARD_NAME     = 'zashboard'
 DEPLOYMENT_TARGET  = '15.0'
 SHARED_FOLDER      = 'Shared'
 
-EVERYWHERE_CORE_REPO        = 'https://github.com/NodePassProject/EverywhereCore'
-EVERYWHERE_CORE_MIN_VERSION = '2026.05.18'
-EVERYWHERE_CORE_REQ         = { 'kind' => 'upToNextMajorVersion', 'minimumVersion' => EVERYWHERE_CORE_MIN_VERSION }
-EVERYWHERE_CORE_PRODUCT     = 'EverywhereCore'
+EVERYWHERE_CORE_UPSTREAM_REPO = 'https://github.com/NodePassProject/EverywhereCore'
+EVERYWHERE_CORE_LOCAL_PATH    = 'Packages/EverywhereCore'
+EVERYWHERE_CORE_PRODUCT       = 'EverywhereCore'
 
 RUNESTONE_URL = 'https://github.com/simonbs/Runestone'
 RUNESTONE_REQ = { 'kind' => 'upToNextMajorVersion', 'minimumVersion' => '0.5.0' }
@@ -75,6 +74,19 @@ def ensure_swift_package(project, url, requirement)
     project.root_object.package_references << pkg
   end
   pkg.requirement = requirement
+  pkg
+end
+
+def ensure_local_swift_package(project, relative_path)
+  pkg = project.root_object.package_references.find do |p|
+    p.isa == 'XCLocalSwiftPackageReference' &&
+      p.relative_path == relative_path
+  end
+  unless pkg
+    pkg = project.new(Xcodeproj::Project::Object::XCLocalSwiftPackageReference)
+    pkg.relative_path = relative_path
+    project.root_object.package_references << pkg
+  end
   pkg
 end
 
@@ -143,7 +155,10 @@ def remove_swift_product(project, product_name)
 end
 
 # --- EverywhereCore (both targets) ---------------------------------------
-core_pkg = ensure_swift_package(project, EVERYWHERE_CORE_REPO, EVERYWHERE_CORE_REQ)
+# Remove the old shared three-engine binary before wiring the repository-local
+# package that downloads the Mihomo-only release artifact.
+remove_swift_package(project, EVERYWHERE_CORE_UPSTREAM_REPO)
+core_pkg = ensure_local_swift_package(project, EVERYWHERE_CORE_LOCAL_PATH)
 core_app_dep = add_product_dep(app_target, project, core_pkg, EVERYWHERE_CORE_PRODUCT)
 core_ne_dep  = add_product_dep(ne_target,  project, core_pkg, EVERYWHERE_CORE_PRODUCT)
 link_product(app_target, project, core_app_dep)
@@ -269,4 +284,4 @@ end
 end
 
 project.save
-puts "Wired EverywhereCore (>= #{EVERYWHERE_CORE_MIN_VERSION}, SwiftPM) + Runestone + zashboard into #{PROJECT_PATH}"
+puts "Wired local Mihomo-only EverywhereCore + Runestone + zashboard into #{PROJECT_PATH}"
